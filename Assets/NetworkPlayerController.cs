@@ -1,0 +1,146 @@
+using System.Collections;
+using System.Collections.Generic;
+using EventHelper;
+using Mirror;
+using UnityEngine;
+
+public class NetworkPlayerController : NetworkBehaviour
+{
+    /*
+    [SerializeField] private float fingerRotationInterval = 0.1F;
+    private float fingerRotationsCooldown;
+
+    [SerializeField] private PlayerData _playerData;
+    private UnityQuaternionArrayEvent _onServerRecieveLeftFingerRotationUpdate = new UnityQuaternionArrayEvent();
+    private UnityQuaternionArrayEvent _onServerRecieveRightFingerRotationUpdate = new UnityQuaternionArrayEvent();
+
+    public UnityQuaternionArrayEvent OnServerRecieveLeftFingerRotationUpdate { get => _onServerRecieveLeftFingerRotationUpdate; set => _onServerRecieveLeftFingerRotationUpdate = value; }
+    public UnityQuaternionArrayEvent OnServerRecieveRightFingerRotationUpdate { get => _onServerRecieveRightFingerRotationUpdate; set => _onServerRecieveRightFingerRotationUpdate = value; }
+
+    private UnityQuaternionArrayEvent _onClientLeftFingerRotationUpdate = new UnityQuaternionArrayEvent();
+    private UnityQuaternionArrayEvent _onClientRightFingerRotationUpdate = new UnityQuaternionArrayEvent();
+
+    public UnityQuaternionArrayEvent OnClientLeftFingerRotationUpdate { get => _onClientLeftFingerRotationUpdate; set => _onClientLeftFingerRotationUpdate = value; }
+    public UnityQuaternionArrayEvent OnClientRightFingerRotationUpdate { get => _onClientRightFingerRotationUpdate; set => _onClientRightFingerRotationUpdate = value; }
+    */
+    
+    [SerializeField] private Transform _networkHead, _networkLeftHand, _networkRightHand;
+    private Transform _oculusHead, _oculusLeftHand, _oculusRightHand;
+
+    private void Start()
+    {
+        VrNetworkManager.singleton.OnServerAddPlayerEvent.AddListener(OnServerAddPlayer);
+
+        _networkLeftHand.gameObject.SetActive(!isLocalPlayer);
+        _networkRightHand.gameObject.SetActive(!isLocalPlayer);
+        /*
+        if (!isLocalPlayer)
+        {
+            _onClientLeftFingerRotationUpdate.AddListener(_networkLeftHand.GetComponent<FingerRotations>().SetInterpolate);
+            _onClientRightFingerRotationUpdate.AddListener(_networkRightHand.GetComponent<FingerRotations>().SetInterpolate);
+        }
+        if (isServer)
+        {
+            _onServerRecieveLeftFingerRotationUpdate.AddListener(_networkLeftHand.GetComponent<FingerRotations>().SetInterpolate);
+            _onServerRecieveRightFingerRotationUpdate.AddListener(_networkRightHand.GetComponent<FingerRotations>().SetInterpolate);
+        }
+        */
+        enabled = isLocalPlayer;
+        if (!enabled) return;
+
+        Transform XRCameraRig = GameObject.FindWithTag("Player").transform;
+
+        TransformHolder transformHolder = XRCameraRig.GetComponent<TransformHolder>();
+
+        _oculusHead = transformHolder.Head;
+        _oculusLeftHand = transformHolder.LeftHand;
+        _oculusRightHand = transformHolder.RightHand;
+
+        // CmdSendPlayerDataToServer(XRCameraRigCameraRig.GetComponent<TransformHolder>().PlayerData);
+    }
+
+    void SetLayerRecursively(GameObject g, int layer)
+    {
+        g.layer = layer;
+
+        foreach (Transform child in g.transform)
+        {
+            SetLayerRecursively(child.gameObject, layer);
+        }
+    }
+    /*
+    [Command]
+    public void CmdSendPlayerDataToServer(PlayerData playerData)
+    {
+        _playerData = playerData;
+        RpcUpdateNetworkPlayerData(playerData);
+        GetComponent<AvatarSpawner>().SpawnAvatar(playerData,_networkHead,_networkLeftHand,_networkRightHand,false);
+    }
+    */
+    private void OnServerAddPlayer(NetworkConnection con)
+    {
+        // RpcUpdateNetworkPlayerData(_playerData);
+    }
+    /*
+    [ClientRpc]
+    private void RpcUpdateNetworkPlayerData(PlayerData playerData)
+    {
+        //_playerData = playerData;
+        //GetComponent<AvatarSpawner>().SpawnAvatar(playerData, _networkHead, _networkLeftHand, _networkRightHand, true);
+    }
+    */
+    /*
+    [Command]
+    private void CmdSetFingerRotations(Quaternion[] quaternions, bool left)
+    {
+        RpcSetFingerRotations(quaternions, left);
+        if (left)
+        {
+            OnServerRecieveLeftFingerRotationUpdate.Invoke(quaternions);
+        }
+        else
+        {
+            OnServerRecieveRightFingerRotationUpdate.Invoke(quaternions);
+        }
+    }
+    */
+    /*
+    [ClientRpc]
+    private void RpcSetFingerRotations(Quaternion[] quaternions, bool left)
+    {
+        if (!isLocalPlayer)
+        {
+            if (left) OnClientLeftFingerRotationUpdate.Invoke(quaternions);
+            else OnClientRightFingerRotationUpdate.Invoke(quaternions);
+        }
+    }
+    */
+    private void Update()
+    {
+        _networkHead.position = _oculusHead.position;
+        _networkHead.rotation = _oculusHead.rotation;
+
+        _networkLeftHand.position = _oculusLeftHand.position;
+        _networkLeftHand.rotation = _oculusLeftHand.rotation;
+
+        _networkRightHand.position = _oculusRightHand.position;
+        _networkRightHand.rotation = _oculusRightHand.rotation;
+        
+        /*
+        if (fingerRotationsCooldown > 0)
+        {
+            fingerRotationsCooldown -= Time.deltaTime;
+        }
+        else
+        {
+            Quaternion[] leftFingerRotations = _oculusLeftHand.GetComponent<FingerRotations>().Get();
+            Quaternion[] rightFingerRotations = _oculusRightHand.GetComponent<FingerRotations>().Get();
+
+            CmdSetFingerRotations(leftFingerRotations, true);
+            CmdSetFingerRotations(rightFingerRotations, false);
+
+            fingerRotationsCooldown = fingerRotationInterval;
+        }
+        */
+    }
+}

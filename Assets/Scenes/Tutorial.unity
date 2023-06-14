@@ -944,7 +944,7 @@ MonoBehaviour:
   onlineScene: Assets/Scenes/Gameplay.unity
   transport: {fileID: 1745809319}
   networkAddress: 192.168.178.52:8569
-  maxConnections: 4
+  maxConnections: 2
   authenticator: {fileID: 0}
   playerPrefab: {fileID: 1779475097150621172, guid: 7835d0f2ee253594db987a0fcb971117, type: 3}
   autoCreatePlayer: 1

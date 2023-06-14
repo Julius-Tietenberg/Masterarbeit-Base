@@ -30,6 +30,7 @@ public class VrNetworkManager : NetworkManager
         if(PlayerPrefs.HasKey("IP")) base.networkAddress = PlayerPrefs.GetString("IP");
         if(PlayerPrefs.HasKey("Port")) GetComponent<TelepathyTransport>().port = ushort.Parse(PlayerPrefs.GetString("Port"));
     }
+    
 
     #region Unity Callbacks
 

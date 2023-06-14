@@ -27,6 +27,14 @@ public class NetworkPlayerController : NetworkBehaviour
     [SerializeField] private Transform _networkHead, _networkLeftHand, _networkRightHand;
     private Transform _oculusHead, _oculusLeftHand, _oculusRightHand;
 
+    
+    [Header("Local Avatar Rendering")]
+    [Tooltip("If set to 'true', you can only see the full avatar of your partner.")]
+    [SerializeField] private bool deactivateLocalAvatarDisplay;
+    // Lists contain the renderes of all visible avatar parts and tools. 
+    [SerializeField] private List<SkinnedMeshRenderer> AvatarRenderers;
+    [SerializeField] private List<MeshRenderer> ToolRenderers;
+
     private void Start()
     {
         VrNetworkManager.singleton.OnServerAddPlayerEvent.AddListener(OnServerAddPlayer);
@@ -55,8 +63,10 @@ public class NetworkPlayerController : NetworkBehaviour
         _oculusHead = transformHolder.Head;
         _oculusLeftHand = transformHolder.LeftHand;
         _oculusRightHand = transformHolder.RightHand;
-
-        // CmdSendPlayerDataToServer(XRCameraRigCameraRig.GetComponent<TransformHolder>().PlayerData);
+        
+        //ChangeLayer(this.gameObject, 7);
+        DeactivateLocalAvatarRendering();
+        
     }
 
     void SetLayerRecursively(GameObject g, int layer)
@@ -68,6 +78,38 @@ public class NetworkPlayerController : NetworkBehaviour
             SetLayerRecursively(child.gameObject, layer);
         }
     }
+
+    /// <summary>
+    /// This method will deactivate the renderers for all (networked) avatar parts and tools on the local player.
+    /// You will still be able to see your (local) tools on the server, while your partner can only see the networked avatar and tools.
+    /// </summary>
+    public void DeactivateLocalAvatarRendering()
+    {
+        if (isLocalPlayer && deactivateLocalAvatarDisplay)
+        { 
+            foreach (var renderer in AvatarRenderers)
+            {
+                renderer.enabled = false;
+            }
+            foreach (var renderer in ToolRenderers)
+            {
+                renderer.enabled = false;
+            }
+        }
+    }
+    
+
+    [ClientRpc(includeOwner = false)]
+    public void ChangeLayer(GameObject g, int layer)
+    {
+        g.layer = layer;
+
+        foreach (Transform child in g.transform)
+        {
+            SetLayerRecursively(child.gameObject, layer);
+        }
+    }
+    
     /*
     [Command]
     public void CmdSendPlayerDataToServer(PlayerData playerData)
@@ -80,6 +122,7 @@ public class NetworkPlayerController : NetworkBehaviour
     private void OnServerAddPlayer(NetworkConnection con)
     {
         // RpcUpdateNetworkPlayerData(_playerData);
+        
     }
     /*
     [ClientRpc]

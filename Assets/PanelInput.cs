@@ -42,12 +42,12 @@ public class PanelInput : NetworkBehaviour
     {
         if (isServer)
         {
-            if (currentLetter == "ABC")
+            if (currentLetter == "ABCDEF")
             {
                 statusLed.color = Color.green;
                 SwitchLedColor();
             }
-            else if (currentLetter.Length >= 3)
+            else if (currentLetter.Length == 6)
             {
                 currentLetter = "";
             }

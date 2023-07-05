@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using EventHelper;
 using Mirror;
@@ -160,14 +160,28 @@ public class NetworkPlayerController : NetworkBehaviour
     */
     private void Update()
     {
-        _networkHead.position = _oculusHead.position;
-        _networkHead.rotation = _oculusHead.rotation;
 
-        _networkLeftHand.position = _oculusLeftHand.position;
-        _networkLeftHand.rotation = _oculusLeftHand.rotation;
-
-        _networkRightHand.position = _oculusRightHand.position;
-        _networkRightHand.rotation = _oculusRightHand.rotation;
+        if (_oculusHead && _networkLeftHand && _oculusRightHand)
+        {
+            try
+            {
+                _networkHead.position = _oculusHead.position; 
+                _networkHead.rotation = _oculusHead.rotation;
+            
+                _networkLeftHand.position = _oculusLeftHand.position;
+                _networkLeftHand.rotation = _oculusLeftHand.rotation;
+            
+                _networkRightHand.position = _oculusRightHand.position;
+                _networkRightHand.rotation = _oculusRightHand.rotation;
+            }
+            catch (Exception e)
+            {
+                Debug.Log("Race condition (Network Player Controller occured!");
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+        
         
         /*
         if (fingerRotationsCooldown > 0)

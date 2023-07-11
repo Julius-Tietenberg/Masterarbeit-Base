@@ -7,6 +7,7 @@ using System;
 public class CandleController : NetworkBehaviour
 {
 
+    // This is invoked to inform all listeners, when the candles state changes.
     public static event Action<int> CandleSwitched;
     
     [SerializeField] 
@@ -22,6 +23,7 @@ public class CandleController : NetworkBehaviour
     [Command (requiresAuthority = false)]
     public void CmdSwitchCandleState()
     {
+        Debug.Log("CandleSwitchCmd wird gestartet");
         if (!candleLit)
         {
             //candleFlame.Play();

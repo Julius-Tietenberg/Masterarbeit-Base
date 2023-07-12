@@ -61,18 +61,7 @@ public class ButtonPuzzleController : NetworkBehaviour
         }
         else
         {
-            buttonsInSequence[newValue-1].GetComponent<ButtonController>().FeedbackButtonFalse();
-            Debug.Log("Wrong Button pressed.");
-            StopAllCoroutines();
-            StartCoroutine(WaitAndResetBool(2));
-            Debug.Log("Buttons will be reset now");
-            
-            foreach (var button in buttonsInSequence)
-            {
-                button.GetComponent<ButtonController>().ResetButtonState();
-                currentButtonValue = 0;
-                //Give some feedback that the puzzle was reset
-            }
+            StartCoroutine(WrongFeedbackAndReset(newValue));
         }
     }
 
@@ -81,6 +70,23 @@ public class ButtonPuzzleController : NetworkBehaviour
         yield return new WaitForSeconds(secondsToWait);
         timeExceeded = true;
     }
+    
+    private IEnumerator WrongFeedbackAndReset(int newValue)
+    {
+        buttonsInSequence[newValue-1].GetComponent<ButtonController>().FeedbackButtonFalse();
+        Debug.Log("Wrong Button pressed.");
+
+        yield return new WaitForSeconds(2);
+        Debug.Log("Buttons will be reset now");
+            
+        foreach (var button in buttonsInSequence)
+        {
+            button.GetComponent<ButtonController>().ResetButtonState();
+            //Give some feedback that the puzzle was reset
+        }
+        currentButtonValue = 0;
+    }
+    
 
     private void OnEnable()
     {

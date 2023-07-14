@@ -1885,8 +1885,8 @@ Transform:
   m_GameObject: {fileID: 6248383887448671339}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.1, y: 1.1, z: 1.1}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5730213194012210443}
   - {fileID: 1654258374709951107}
@@ -2313,6 +2313,9 @@ MonoBehaviour:
   _networkHead: {fileID: 3956437871459183700}
   _networkLeftHand: {fileID: 7363431718726705021}
   _networkRightHand: {fileID: 6289905406667653311}
+  deactivateLocalAvatarDisplay: 0
+  AvatarRenderers: []
+  ToolRenderers: []
 --- !u!1 &6268044624658334614
 GameObject:
   m_ObjectHideFlags: 0

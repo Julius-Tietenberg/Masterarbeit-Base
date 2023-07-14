@@ -33,8 +33,10 @@ public class CandlePuzzleControler : NetworkBehaviour
     
     [SyncVar] 
     public bool candlePuzzleSolved;
-    
-    
+
+    [SerializeField] private List<GameObject> candlePuzzleDisplays;
+
+
     public void UpdateCandleCounter(int change, CandleColor color)
     {
         //if (isServer && !candlePuzzleSolved)
@@ -56,10 +58,31 @@ public class CandlePuzzleControler : NetworkBehaviour
             if (purpleCandleCounter == greenCandleCounter)
             {
                 candlePuzzleSolved = true;
+                foreach (var image in candlePuzzleDisplays)
+                {
+                    image.gameObject.SetActive(false);
+                }
+                candlePuzzleDisplays[0].SetActive(true);
                 Debug.Log("The candle Puzzle was solved");
             }
             else
             {
+                if (purpleCandleCounter < greenCandleCounter)
+                {
+                    foreach (var image in candlePuzzleDisplays)
+                    {
+                        image.gameObject.SetActive(false);
+                    }
+                    candlePuzzleDisplays[1].SetActive(true);
+                }
+                else if (purpleCandleCounter > greenCandleCounter)
+                {
+                    foreach (var image in candlePuzzleDisplays)
+                    {
+                        image.gameObject.SetActive(false);
+                    }
+                    candlePuzzleDisplays[3].SetActive(true);
+                }
                 candlePuzzleSolved = false;
                 Debug.Log("The candles are still not equal");
             }
@@ -76,7 +99,7 @@ public class CandlePuzzleControler : NetworkBehaviour
     public void RpcUpdateCandleCounterClient(int newValue, CandleColor color)
     {
         // displayTextObject.text = newValue.ToString();
-        
+        /*
         if (color == CandleColor.Green)
         {
             greenCandleDisplay.text = greenCandleCounter.ToString();
@@ -84,6 +107,36 @@ public class CandlePuzzleControler : NetworkBehaviour
         else if (color == CandleColor.Purple)
         {
             purpleCandleDisplay.text = purpleCandleCounter.ToString();
+        }
+        */
+        
+        if (purpleCandleCounter == greenCandleCounter)
+        {
+            foreach (var image in candlePuzzleDisplays)
+            {
+                image.gameObject.SetActive(false);
+            }
+            candlePuzzleDisplays[0].SetActive(true);
+            
+        }
+        else
+        {
+            if (purpleCandleCounter > greenCandleCounter)
+            {
+                foreach (var image in candlePuzzleDisplays)
+                {
+                    image.gameObject.SetActive(false);
+                }
+                candlePuzzleDisplays[1].SetActive(true);
+            }
+            else if (purpleCandleCounter < greenCandleCounter)
+            {
+                foreach (var image in candlePuzzleDisplays)
+                {
+                    image.gameObject.SetActive(false);
+                }
+                candlePuzzleDisplays[3].SetActive(true);
+            }
         }
     }
 

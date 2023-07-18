@@ -42,7 +42,7 @@ public class PanelInput : NetworkBehaviour
     {
         if (isServer)
         {
-            if (currentLetter == "ABCDEF")
+            if (currentLetter == "ԆϿΨ҂¿Ѧ" )
             {
                 statusLed.color = Color.green;
                 SwitchLedColor();
@@ -50,6 +50,7 @@ public class PanelInput : NetworkBehaviour
             else if (currentLetter.Length == 6)
             {
                 currentLetter = "";
+                SwitchDisplayedLetter(currentLetter);
             }
         }
     }

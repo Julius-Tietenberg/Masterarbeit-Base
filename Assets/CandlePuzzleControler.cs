@@ -121,7 +121,7 @@ public class CandlePuzzleControler : NetworkBehaviour
         }
         else
         {
-            if (purpleCandleCounter > greenCandleCounter)
+            if (purpleCandleCounter < greenCandleCounter)
             {
                 foreach (var image in candlePuzzleDisplays)
                 {
@@ -129,7 +129,7 @@ public class CandlePuzzleControler : NetworkBehaviour
                 }
                 candlePuzzleDisplays[1].SetActive(true);
             }
-            else if (purpleCandleCounter < greenCandleCounter)
+            else if (purpleCandleCounter > greenCandleCounter)
             {
                 foreach (var image in candlePuzzleDisplays)
                 {

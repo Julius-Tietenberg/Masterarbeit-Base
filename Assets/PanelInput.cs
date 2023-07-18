@@ -7,6 +7,9 @@ using TMPro;
 public class PanelInput : NetworkBehaviour
 {
 
+    [SyncVar][SerializeField]
+    private bool codePuzzleSolved;
+    
     [SerializeField] 
     private TMP_Text displayTextObject;
     
@@ -46,6 +49,7 @@ public class PanelInput : NetworkBehaviour
             {
                 statusLed.color = Color.green;
                 SwitchLedColor();
+                codePuzzleSolved = true;
             }
             else if (currentLetter.Length == 6)
             {

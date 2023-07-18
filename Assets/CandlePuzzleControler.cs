@@ -37,6 +37,13 @@ public class CandlePuzzleControler : NetworkBehaviour
     [SerializeField] private List<GameObject> candlePuzzleDisplays;
 
 
+    
+    private void Start()
+    {
+        SetInitialDisplay();
+    }
+
+
     public void UpdateCandleCounter(int change, CandleColor color)
     {
         //if (isServer && !candlePuzzleSolved)
@@ -46,13 +53,13 @@ public class CandlePuzzleControler : NetworkBehaviour
             {
                 greenCandleCounter += change;
                 greenCandleDisplay.text = greenCandleCounter.ToString();
-                RpcUpdateCandleCounterClient(greenCandleCounter, CandleColor.Green);
+                RpcUpdateCandleCounterClient();
             }
             else if (color == CandleColor.Purple)
             {
                 purpleCandleCounter += change;
                 purpleCandleDisplay.text = purpleCandleCounter.ToString();
-                RpcUpdateCandleCounterClient(purpleCandleCounter, CandleColor.Purple);
+                RpcUpdateCandleCounterClient();
             }
 
             if (purpleCandleCounter == greenCandleCounter)
@@ -69,19 +76,40 @@ public class CandlePuzzleControler : NetworkBehaviour
             {
                 if (purpleCandleCounter < greenCandleCounter)
                 {
-                    foreach (var image in candlePuzzleDisplays)
+                    if ((purpleCandleCounter + 3) < greenCandleCounter)
                     {
-                        image.gameObject.SetActive(false);
+                        foreach (var image in candlePuzzleDisplays)
+                        {
+                            image.gameObject.SetActive(false);
+                        }
+                        candlePuzzleDisplays[2].SetActive(true);
                     }
-                    candlePuzzleDisplays[1].SetActive(true);
+                    else
+                    {
+                        foreach (var image in candlePuzzleDisplays)
+                        {
+                            image.gameObject.SetActive(false);
+                        }
+                        candlePuzzleDisplays[1].SetActive(true);
+                    }
                 }
                 else if (purpleCandleCounter > greenCandleCounter)
                 {
-                    foreach (var image in candlePuzzleDisplays)
+                    if (purpleCandleCounter > (greenCandleCounter + 3))
                     {
-                        image.gameObject.SetActive(false);
+                        foreach (var image in candlePuzzleDisplays)
+                        {
+                            image.gameObject.SetActive(false);
+                        }
+                        candlePuzzleDisplays[4].SetActive(true);
                     }
-                    candlePuzzleDisplays[3].SetActive(true);
+                    else
+                    { foreach (var image in candlePuzzleDisplays)
+                        {
+                            image.gameObject.SetActive(false);
+                        }
+                        candlePuzzleDisplays[3].SetActive(true);
+                    }
                 }
                 candlePuzzleSolved = false;
                 Debug.Log("The candles are still not equal");
@@ -96,8 +124,59 @@ public class CandlePuzzleControler : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void RpcUpdateCandleCounterClient(int newValue, CandleColor color)
+    public void RpcUpdateCandleCounterClient()
     {
+        if (purpleCandleCounter == greenCandleCounter)
+            {
+                candlePuzzleSolved = true;
+                foreach (var image in candlePuzzleDisplays)
+                {
+                    image.gameObject.SetActive(false);
+                }
+                candlePuzzleDisplays[0].SetActive(true);
+                Debug.Log("The candle Puzzle was solved");
+            }
+            else
+            {
+                if (purpleCandleCounter < greenCandleCounter)
+                {
+                    if ((purpleCandleCounter + 3) < greenCandleCounter)
+                    {
+                        foreach (var image in candlePuzzleDisplays)
+                        {
+                            image.gameObject.SetActive(false);
+                        }
+                        candlePuzzleDisplays[2].SetActive(true);
+                    }
+                    else
+                    {
+                        foreach (var image in candlePuzzleDisplays)
+                        {
+                            image.gameObject.SetActive(false);
+                        }
+                        candlePuzzleDisplays[1].SetActive(true);
+                    }
+                }
+                else if (purpleCandleCounter > greenCandleCounter)
+                {
+                    if (purpleCandleCounter > (greenCandleCounter + 3))
+                    {
+                        foreach (var image in candlePuzzleDisplays)
+                        {
+                            image.gameObject.SetActive(false);
+                        }
+                        candlePuzzleDisplays[4].SetActive(true);
+                    }
+                    else
+                    { foreach (var image in candlePuzzleDisplays)
+                        {
+                            image.gameObject.SetActive(false);
+                        }
+                        candlePuzzleDisplays[3].SetActive(true);
+                    }
+                }
+            }
+        
         // displayTextObject.text = newValue.ToString();
         /*
         if (color == CandleColor.Green)
@@ -108,7 +187,7 @@ public class CandlePuzzleControler : NetworkBehaviour
         {
             purpleCandleDisplay.text = purpleCandleCounter.ToString();
         }
-        */
+        
         
         if (purpleCandleCounter == greenCandleCounter)
         {
@@ -138,7 +217,79 @@ public class CandlePuzzleControler : NetworkBehaviour
                 candlePuzzleDisplays[3].SetActive(true);
             }
         }
+        */
     }
+
+
+    public void SetInitialDisplay()
+    {
+
+        if (isServer)
+        {
+
+
+            if (purpleCandleCounter == greenCandleCounter)
+            {
+                candlePuzzleSolved = true;
+                foreach (var image in candlePuzzleDisplays)
+                {
+                    image.gameObject.SetActive(false);
+                }
+
+                candlePuzzleDisplays[0].SetActive(true);
+                Debug.Log("The candle Puzzle was solved");
+            }
+            else
+            {
+                if (purpleCandleCounter < greenCandleCounter)
+                {
+                    if ((purpleCandleCounter + 3) < greenCandleCounter)
+                    {
+                        foreach (var image in candlePuzzleDisplays)
+                        {
+                            image.gameObject.SetActive(false);
+                        }
+
+                        candlePuzzleDisplays[2].SetActive(true);
+                    }
+                    else
+                    {
+                        foreach (var image in candlePuzzleDisplays)
+                        {
+                            image.gameObject.SetActive(false);
+                        }
+
+                        candlePuzzleDisplays[1].SetActive(true);
+                    }
+                }
+                else if (purpleCandleCounter > greenCandleCounter)
+                {
+                    if (purpleCandleCounter > (greenCandleCounter + 3))
+                    {
+                        foreach (var image in candlePuzzleDisplays)
+                        {
+                            image.gameObject.SetActive(false);
+                        }
+
+                        candlePuzzleDisplays[4].SetActive(true);
+                    }
+                    else
+                    {
+                        foreach (var image in candlePuzzleDisplays)
+                        {
+                            image.gameObject.SetActive(false);
+                        }
+
+                        candlePuzzleDisplays[3].SetActive(true);
+                    }
+                }
+
+                candlePuzzleSolved = false;
+                Debug.Log("The candles are still not equal");
+            }
+        }
+    }
+    
 
     private void OnEnable()
     {

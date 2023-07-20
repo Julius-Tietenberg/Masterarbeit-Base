@@ -25,13 +25,15 @@ public class ButtonPuzzleController : NetworkBehaviour
     [SyncVar] 
     public bool buttonPuzzleSolved;
 
+    // Will be set to true, while the puzzle resets after a wrong entry. 
+    [SyncVar] public bool newInputBlocked;
     public void CheckSequence(int newValue)
     {
         if (buttonPuzzleSolved)
         {
             return;
         }
-        if (newValue == 1 && currentButtonValue == 0)
+        if (newValue == 1 && currentButtonValue == 0 && !newInputBlocked)
         {
             currentButtonValue = newValue;
             buttonsInSequence[newValue-1].GetComponent<ButtonController>().FeedbackButtonCorrect();
@@ -41,7 +43,7 @@ public class ButtonPuzzleController : NetworkBehaviour
             StartCoroutine(WaitAndResetBool(5));
             //Give some feedback that the button was correct and the next one needs to be pressed within 5secs
         }
-        else if (newValue == (currentButtonValue + 1) && newValue == maxButtonValue && !timeExceeded)
+        else if (newValue == (currentButtonValue + 1) && newValue == maxButtonValue && !timeExceeded && !newInputBlocked)
         {
             currentButtonValue = newValue;
             buttonsInSequence[newValue-1].GetComponent<ButtonController>().FeedbackButtonCorrect();
@@ -49,7 +51,7 @@ public class ButtonPuzzleController : NetworkBehaviour
             Debug.Log("Button Sequence fully solved");
             // Give feedback that the puzzle is solved and deactivate new inputs
         }
-        else if (newValue == (currentButtonValue + 1) && !timeExceeded)
+        else if (newValue == (currentButtonValue + 1) && !timeExceeded && !newInputBlocked)
         {
             currentButtonValue = newValue;
             buttonsInSequence[newValue-1].GetComponent<ButtonController>().FeedbackButtonCorrect();
@@ -61,6 +63,7 @@ public class ButtonPuzzleController : NetworkBehaviour
         }
         else
         {
+            newInputBlocked = true;
             StartCoroutine(WrongFeedbackAndReset(newValue));
         }
     }
@@ -85,6 +88,7 @@ public class ButtonPuzzleController : NetworkBehaviour
             //Give some feedback that the puzzle was reset
         }
         currentButtonValue = 0;
+        newInputBlocked = false;
     }
     
 

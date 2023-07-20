@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 1000 1000" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <path d="M500,0C775.958,0 1000,224.042 1000,500C1000,775.958 775.958,1000 500,1000C224.042,1000 0,775.958 0,500C0,224.042 224.042,0 500,0ZM500,40C753.881,40 960,246.119 960,500C960,753.881 753.881,960 500,960C246.119,960 40,753.881 40,500C40,246.119 246.119,40 500,40Z" style="fill:rgb(186,233,255);"/>
+    <g id="swap_horiz_FILL0_wght400_GRAD0_opsz48.svg" transform="matrix(18.75,0,0,18.75,500,500)">
+        <g transform="matrix(1,0,0,1,-24,-24)">
+            <path d="M13.65,40L4,30.35L13.65,20.7L15.75,22.8L9.7,28.85L25.5,28.85L25.5,31.85L9.7,31.85L15.75,37.9L13.65,40ZM34.35,27.3L32.25,25.2L38.3,19.15L22.5,19.15L22.5,16.15L38.3,16.15L32.25,10.1L34.35,8L44,17.65L34.35,27.3Z" style="fill:rgb(186,233,255);fill-rule:nonzero;"/>
+        </g>
+    </g>
+</svg>

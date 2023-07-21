@@ -47,6 +47,11 @@ public class CandleController : NetworkBehaviour
             default:
                 throw new ArgumentOutOfRangeException();
         }
+
+        if (!candleLit)
+        {
+            candleFlame.gameObject.SetActive(false);
+        }
     }
 
     /// <summary>

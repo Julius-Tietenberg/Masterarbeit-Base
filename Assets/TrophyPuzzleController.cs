@@ -18,7 +18,7 @@ public class TrophyPuzzleController : NetworkBehaviour
 
     [SerializeField] private List<GameObject> currentOrder;
 
-    public bool TrophyPuzzleSolved;
+    [SyncVar] public bool TrophyPuzzleSolved;
 
     private void Awake()
     {
@@ -26,6 +26,14 @@ public class TrophyPuzzleController : NetworkBehaviour
         trophyPositions[1] = currentOrder[1].transform.position;
         trophyPositions[2] = currentOrder[2].transform.position;
         trophyPositions[3] = currentOrder[3].transform.position;
+    }
+
+    private void Update()
+    {
+        if (currentOrder == solutionOrder && isServer)
+        {
+            TrophyPuzzleSolved = true;
+        }
     }
 
 
@@ -64,11 +72,13 @@ public class TrophyPuzzleController : NetworkBehaviour
             
             RpcSwitchTrophyPositions(buttonNr);
             
-            if (currentOrder == solutionOrder)
-            {
-                TrophyPuzzleSolved = true;
-            }
         }
+        
+        if (currentOrder == solutionOrder)
+        {
+            TrophyPuzzleSolved = true;
+        }
+        
     }
 
     [ClientRpc]

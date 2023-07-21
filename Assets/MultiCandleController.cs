@@ -51,6 +51,14 @@ public class MultiCandleController : NetworkBehaviour
             default:
                 throw new ArgumentOutOfRangeException();
         }
+        
+        if (!candlesLit)
+        {
+            foreach (var flame in candleFlames)
+            {
+                flame.gameObject.SetActive(false);
+            }
+        }
     }
     
     /// <summary>

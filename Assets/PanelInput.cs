@@ -22,10 +22,13 @@ public class PanelInput : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void EnterLetter(string letter)
     {
-        Debug.Log("Switch the last entered Letter");
-        currentLetter += letter;
-        displayTextObject.text = currentLetter;
-        SwitchDisplayedLetter(currentLetter);
+        if (codePuzzleSolved == false)
+        {
+            Debug.Log("Switch the last entered Letter");
+            currentLetter += letter;
+            displayTextObject.text = currentLetter;
+            SwitchDisplayedLetter(currentLetter);
+        }
     }
 
     [ClientRpc]

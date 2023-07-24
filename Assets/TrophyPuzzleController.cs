@@ -30,10 +30,12 @@ public class TrophyPuzzleController : NetworkBehaviour
 
     private void Update()
     {
+        /*
         if (currentOrder == solutionOrder && isServer)
         {
             TrophyPuzzleSolved = true;
         }
+        */
     }
 
 
@@ -74,7 +76,7 @@ public class TrophyPuzzleController : NetworkBehaviour
             
         }
         
-        if (currentOrder == solutionOrder)
+        if (currentOrder[0] == solutionOrder[0] && currentOrder[1] == solutionOrder[1] && currentOrder[2] == solutionOrder[2] && currentOrder[3] == solutionOrder[3])
         {
             TrophyPuzzleSolved = true;
         }

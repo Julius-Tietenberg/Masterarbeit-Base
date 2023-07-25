@@ -11,7 +11,7 @@ public class ButtonPuzzleController : NetworkBehaviour
     
     public AudioSource audioSource;
     public AudioClip clip;
-    public float volume=0.5f;
+    public float volume;
     
     // This list contains all Buttons (in order!).
     public List<GameObject> buttonsInSequence;
@@ -55,6 +55,7 @@ public class ButtonPuzzleController : NetworkBehaviour
             buttonsInSequence[newValue-1].GetComponent<ButtonController>().FeedbackButtonCorrect();
             buttonPuzzleSolved = true;
             PuzzleSolved?.Invoke(PuzzleType.Button);
+            StopAllCoroutines();
             Debug.Log("Button Sequence fully solved");
             // Give feedback that the puzzle is solved and deactivate new inputs
         }
@@ -117,7 +118,6 @@ public class ButtonPuzzleController : NetworkBehaviour
         currentButtonValue = 0;
         newInputBlocked = false;
     }
-    
 
     private void OnEnable()
     {

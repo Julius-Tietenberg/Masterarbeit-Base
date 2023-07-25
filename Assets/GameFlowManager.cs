@@ -16,14 +16,87 @@ public enum PuzzleType
 public class GameFlowManager : NetworkBehaviour
 {
    
+   public static event Action<PuzzleType> NewPuzzleSolved;
+   public static event Action StartDataLogging;
+   public static event Action StopDataLogging;
+   
    [SerializeField] private List<Image> puzzleIcons;
 
    [SerializeField] private Color solvedGreen;
+
+   [SerializeField] private GameObject startGameScreen;
+   [SerializeField] private Image buttonPlayer1;
+   [SerializeField] private Image buttonPlayer2;
 
    public bool trophyPuzzleSolved;
    public bool candlePuzzleSolved;
    public bool codePuzzleSolved;
    public bool buttonPuzzleSolved;
+
+   public int amountOfSolvedPuzzles;
+   public bool gameFinished;
+
+   [SyncVar] public bool readyPlayer1;
+   [SyncVar] public bool readyPlayer2;
+   
+   public AudioSource audioSource;
+   public AudioClip clip;
+   public float volume=0.6f;
+   
+   
+   [Command (requiresAuthority = false)]
+   public void CmdSetPlayerStatus(int player)
+   {
+      if (player == 1)
+      {
+         readyPlayer1 = !readyPlayer1;
+         
+         if (readyPlayer1)
+         {
+            buttonPlayer1.color = solvedGreen;
+         }
+      }
+      else if (player == 2)
+      {
+         readyPlayer2 = !readyPlayer2;
+         
+         if (readyPlayer2)
+         {
+            buttonPlayer2.color = solvedGreen;
+         }
+      }
+      RpcSetButton();
+
+      if (readyPlayer1 && readyPlayer2)
+      {
+         startGameScreen.SetActive(false);
+         StartDataLogging?.Invoke();
+         RpcStartGame();
+         // Start the countdown and timer
+         // Start data logging
+         
+      }
+   }
+
+   [ClientRpc]
+   public void RpcSetButton()
+   {
+      if (readyPlayer1)
+      {
+         buttonPlayer1.color = solvedGreen;
+      }
+      
+      if (readyPlayer2)
+      {
+         buttonPlayer2.color = solvedGreen;
+      }
+   }
+   
+   [ClientRpc]
+   public void RpcStartGame()
+   {
+      startGameScreen.SetActive(false);
+   }
 
    public void OnPuzzleSolved(PuzzleType type)
    {
@@ -47,18 +120,32 @@ public class GameFlowManager : NetworkBehaviour
          buttonPuzzleSolved = true;
          HandlePuzzleFinished(3);
       }
+      NewPuzzleSolved?.Invoke(type);
    }
    
    public void HandlePuzzleFinished(int puzzleNr)
    {
       puzzleIcons[puzzleNr].color = solvedGreen;
+      audioSource.PlayOneShot(clip, volume);
+      amountOfSolvedPuzzles += 1;
       RpcHandlePuzzleSolved(puzzleNr);
+      CheckIfAllPuzzlesSolved();
+   }
+
+   public void CheckIfAllPuzzlesSolved()
+   {
+      if (amountOfSolvedPuzzles == 4 && !gameFinished)
+      {
+         gameFinished = true;
+         StopDataLogging?.Invoke();
+      }
    }
 
    [ClientRpc]
    public void RpcHandlePuzzleSolved(int puzzleNr)
    {
       Debug.Log("HandlePuzzleSolved RPC was called");
+      audioSource.PlayOneShot(clip, volume);
       puzzleIcons[puzzleNr].color = solvedGreen;
    }
 

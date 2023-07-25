@@ -47,7 +47,7 @@ public class PanelInput : NetworkBehaviour
 
     private void Update()
     {
-        if (isServer)
+        if (isServer && !codePuzzleSolved)
         {
             if (currentLetter == "ԆϿΨ҂¿Ѧ" )
             {

@@ -47,8 +47,8 @@ public class CandlePuzzleControler : NetworkBehaviour
 
     public void UpdateCandleCounter(int change, CandleColor color)
     {
-        //if (isServer && !candlePuzzleSolved)
-        if (isServer)
+        if (isServer && !candlePuzzleSolved)
+        //if (isServer)
         {
             if (color == CandleColor.Green)
             {

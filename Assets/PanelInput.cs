@@ -6,6 +6,7 @@ using TMPro;
 
 public class PanelInput : NetworkBehaviour
 {
+    public static event Action<PuzzleType> PuzzleSolved;
 
     [SyncVar][SerializeField]
     private bool codePuzzleSolved;
@@ -53,6 +54,7 @@ public class PanelInput : NetworkBehaviour
                 statusLed.color = Color.green;
                 SwitchLedColor();
                 codePuzzleSolved = true;
+                PuzzleSolved?.Invoke(PuzzleType.Code);
             }
             else if (currentLetter.Length == 6)
             {

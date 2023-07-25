@@ -35,8 +35,9 @@ public class CandlePuzzleControler : NetworkBehaviour
     public bool candlePuzzleSolved;
 
     [SerializeField] private List<GameObject> candlePuzzleDisplays;
-
-
+    
+    public static event Action<PuzzleType> PuzzleSolved;
+    
     
     private void Start()
     {
@@ -65,6 +66,7 @@ public class CandlePuzzleControler : NetworkBehaviour
             if (purpleCandleCounter == greenCandleCounter)
             {
                 candlePuzzleSolved = true;
+                PuzzleSolved?.Invoke(PuzzleType.Candle);
                 foreach (var image in candlePuzzleDisplays)
                 {
                     image.gameObject.SetActive(false);
@@ -231,6 +233,7 @@ public class CandlePuzzleControler : NetworkBehaviour
             if (purpleCandleCounter == greenCandleCounter)
             {
                 candlePuzzleSolved = true;
+                PuzzleSolved?.Invoke(PuzzleType.Candle);
                 foreach (var image in candlePuzzleDisplays)
                 {
                     image.gameObject.SetActive(false);

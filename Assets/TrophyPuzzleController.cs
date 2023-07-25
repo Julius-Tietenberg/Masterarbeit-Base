@@ -7,6 +7,8 @@ using Mirror;
 public class TrophyPuzzleController : NetworkBehaviour
 {
 
+    public static event Action<PuzzleType> PuzzleSolved;
+    
     [SerializeField] public Vector3 positionOne;
     [SerializeField] public Vector3 positionTwo;
     [SerializeField] public Vector3 positionThree;
@@ -20,6 +22,8 @@ public class TrophyPuzzleController : NetworkBehaviour
 
     [SyncVar] public bool TrophyPuzzleSolved;
 
+    [SerializeField] private GameObject buttonCanvas;
+
     private void Awake()
     {
         trophyPositions[0] = currentOrder[0].transform.position;
@@ -27,18 +31,7 @@ public class TrophyPuzzleController : NetworkBehaviour
         trophyPositions[2] = currentOrder[2].transform.position;
         trophyPositions[3] = currentOrder[3].transform.position;
     }
-
-    private void Update()
-    {
-        /*
-        if (currentOrder == solutionOrder && isServer)
-        {
-            TrophyPuzzleSolved = true;
-        }
-        */
-    }
-
-
+    
     [Command (requiresAuthority = false)]
     public void CmdSwitchTrophyPositions(int buttonNr)
     {
@@ -79,8 +72,11 @@ public class TrophyPuzzleController : NetworkBehaviour
         if (currentOrder[0] == solutionOrder[0] && currentOrder[1] == solutionOrder[1] && currentOrder[2] == solutionOrder[2] && currentOrder[3] == solutionOrder[3])
         {
             TrophyPuzzleSolved = true;
+            PuzzleSolved?.Invoke(PuzzleType.Trophy);
+            buttonCanvas.SetActive(false);
+            // Give some additional feedback
+            RpcSolvedFeedback();
         }
-        
     }
 
     [ClientRpc]
@@ -113,6 +109,12 @@ public class TrophyPuzzleController : NetworkBehaviour
             trophy.transform.position = trophyPositions[counter];
             counter++;
         }
+    }
+
+    [ClientRpc]
+    public void RpcSolvedFeedback()
+    {
+        buttonCanvas.SetActive(false);
     }
 }
 

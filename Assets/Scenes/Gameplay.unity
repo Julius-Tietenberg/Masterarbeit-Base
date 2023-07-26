@@ -8777,7 +8777,7 @@ MonoBehaviour:
   codePuzzleSolved: 0
   buttonPuzzleSolved: 0
   amountOfSolvedPuzzles: 0
-  gameFinished: 0
+  gameFinishedByPuzzles: 0
   readyPlayer1: 0
   readyPlayer2: 0
   audioSource: {fileID: 1171994698}

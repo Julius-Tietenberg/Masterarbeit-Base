@@ -8,6 +8,8 @@ using Mirror;
 public class DataLogging : NetworkBehaviour
 {
 
+    public static event Action ReachedEndOfPlaytime;
+    
     private string SAVE_FOLDER;
     
     private string filename = "/PlayerData.csv";
@@ -15,6 +17,8 @@ public class DataLogging : NetworkBehaviour
     [SerializeField] private GameFlowManager gameFlowManager;
 
     public DateTime datetime;
+
+    public float maxGameLengthMins;
     
     public Transform posPlayer1;
     public Transform posPlayer2;  // CLEAR when testing with two headsets
@@ -22,26 +26,28 @@ public class DataLogging : NetworkBehaviour
     public float distanceBetweenPlayers;
     public float sumOfDistances;
     
-    public int totalTimeSecs;
+    public float totalTimeSecs;
     
-    public int timeInIntimateSpace; // Distance of 0.45m or less
-    public int timeInPersonalSpace; // Distance of 1.2m or less
-    public int timeInSocialSpace; // Distance of 3.7m or less
-    public int timeInPublicSpace; // Distance above 3.7m
+    public float timeInIntimateSpace; // Distance of 0.45m or less
+    public float timeInPersonalSpace; // Distance of 1.2m or less
+    public float timeInSocialSpace; // Distance of 3.7m or less
+    public float timeInPublicSpace; // Distance above 3.7m
     
-    public int percentageInIntimateSpace; // Distance of 0.45m or less
-    public int percentageInPersonalSpace; // Distance of 1.2m or less
-    public int percentageInSocialSpace; // Distance of 3.7m or less
-    public int percentageInPublicSpace; // Distance above 3.7m
+    public float percentageInIntimateSpace; // Distance of 0.45m or less
+    public float percentageInPersonalSpace; // Distance of 1.2m or less
+    public float percentageInSocialSpace; // Distance of 3.7m or less
+    public float percentageInPublicSpace; // Distance above 3.7m
     
     public float averageDistance;
     public float minimumDistance;
     
-    public int timestampCodePuzzleSolved;
-    public int timestampCandlePuzzleSolved;
-    public int timestampButtonPuzzleSolved;
-    public int timestampTrophyPuzzleSolved;
+    public float timestampCodePuzzleSolved;
+    public float timestampCandlePuzzleSolved;
+    public float timestampButtonPuzzleSolved;
+    public float timestampTrophyPuzzleSolved;
 
+    private bool percentagesCalculated;
+    private bool dataSaved;
 
     public void StartDataLogging()
     {
@@ -106,48 +112,60 @@ public class DataLogging : NetworkBehaviour
             {
                 Debug.Log("It was not possible to categorize the distance for some reason.");
             }
-            CalculatePercentages();
+        }
+
+        if (totalTimeSecs >= (60f * maxGameLengthMins))
+        {
+            SaveData();
+            ReachedEndOfPlaytime?.Invoke();
         }
     }
 
     // calculate at the end
     public void CalculatePercentages()
     {
-        if (timeInIntimateSpace == 0)
+        if (timeInIntimateSpace > 0)
         {
-            percentageInIntimateSpace = 0;
+            percentageInIntimateSpace += (timeInIntimateSpace / totalTimeSecs) * 100;
+            Debug.Log(("Time in intimate Space > 0"));
         }
         else
         {
-            percentageInIntimateSpace = ((timeInIntimateSpace / totalTimeSecs) * 100);
+            percentageInIntimateSpace = 0;
+            Debug.Log(("Time in intimate Space = 0"));
         }
         
-        if (timeInPersonalSpace == 0)
+        if (timeInPersonalSpace > 0)
+        {
+            
+            percentageInPersonalSpace += (timeInPersonalSpace / totalTimeSecs) * 100;
+        }
+        else
         {
             percentageInPersonalSpace = 0;
         }
-        else
-        {
-            percentageInPersonalSpace = ((timeInPersonalSpace / totalTimeSecs) * 100);
-        }
         
-        if (timeInSocialSpace == 0)
+        if (timeInSocialSpace > 0)
+        {
+            
+            percentageInSocialSpace += (timeInSocialSpace / totalTimeSecs) * 100;
+        }
+        else
         {
             percentageInSocialSpace = 0;
         }
-        else
-        {
-            percentageInSocialSpace = ((timeInSocialSpace / totalTimeSecs) * 100);
-        }
         
-        if (timeInPublicSpace == 0)
+        if (timeInPublicSpace > 0)
+        {
+            
+            percentageInPublicSpace += (timeInPublicSpace / totalTimeSecs) * 100;
+        }
+        else
         {
             percentageInPublicSpace = 0;
         }
-        else
-        {
-            percentageInPublicSpace = ((timeInPublicSpace / totalTimeSecs) * 100);
-        }
+
+        percentagesCalculated = true;
     }
 
     public void SetPuzzleTimestamp(PuzzleType type)
@@ -216,6 +234,8 @@ public class DataLogging : NetworkBehaviour
 
     public void SaveData()
     {
+        StartCoroutine(SaveDataToFile());
+        /*
         if (isServer)
         {
             CalculatePercentages();
@@ -231,6 +251,32 @@ public class DataLogging : NetworkBehaviour
                                  " ; " + timestampButtonPuzzleSolved + " ; ");
             tw.Close();
         }
+        */
+    }
+
+    public IEnumerator SaveDataToFile()
+    {
+        Debug.Log("SaveDataToFileCalled");
+        if (isServer && !dataSaved)
+        {
+            CalculatePercentages();
+
+            yield return new WaitUntil(()=> percentagesCalculated);
+            Debug.Log("Waited until percentages Calculated ");
+            
+            TextWriter tw = new StreamWriter(SAVE_FOLDER + filename, true);
+            tw.WriteLine(datetime + " ; " + totalTimeSecs + " ; " + averageDistance + " ; " +
+                         minimumDistance + " ; " + timeInIntimateSpace + " ; " +
+                         timeInPersonalSpace + " ; " + timeInSocialSpace + " ; " + timeInPublicSpace + " ; " +
+                         percentageInIntimateSpace + " ; " + percentageInPersonalSpace + " ; " + percentageInSocialSpace +
+                         " ; " + percentageInPublicSpace +
+                         " ; " + timestampCandlePuzzleSolved + " ; " + timestampCodePuzzleSolved + " ; " +
+                         timestampTrophyPuzzleSolved +
+                         " ; " + timestampButtonPuzzleSolved + " ; ");
+            tw.Close();
+
+            dataSaved = true;
+        }
     }
 
 
@@ -245,7 +291,6 @@ public class DataLogging : NetworkBehaviour
     {
         GameFlowManager.NewPuzzleSolved -= SetPuzzleTimestamp;
         GameFlowManager.StartDataLogging -= StartDataLogging;
-        GameFlowManager.StopDataLogging += SaveData;
+        GameFlowManager.StopDataLogging -= SaveData;
     }
-
 }

@@ -34,7 +34,7 @@ public class GameFlowManager : NetworkBehaviour
    public bool buttonPuzzleSolved;
 
    public int amountOfSolvedPuzzles;
-   public bool gameFinished;
+   public bool gameFinishedByPuzzles;
 
    [SyncVar] public bool readyPlayer1;
    [SyncVar] public bool readyPlayer2;
@@ -134,10 +134,11 @@ public class GameFlowManager : NetworkBehaviour
 
    public void CheckIfAllPuzzlesSolved()
    {
-      if (amountOfSolvedPuzzles == 4 && !gameFinished)
+      if (amountOfSolvedPuzzles == 4 && !gameFinishedByPuzzles)
       {
-         gameFinished = true;
+         gameFinishedByPuzzles = true;
          StopDataLogging?.Invoke();
+         EndGame();
       }
    }
 
@@ -149,12 +150,25 @@ public class GameFlowManager : NetworkBehaviour
       puzzleIcons[puzzleNr].color = solvedGreen;
    }
 
+   public void EndGame()
+   {
+      if (amountOfSolvedPuzzles == 4 && gameFinishedByPuzzles)
+      {
+         // Logic for Win - Solved by Puzzles
+      }
+      else
+      {
+         // Logic for End - By time, X Puzzles solved
+      }
+   }
+
    private void OnEnable()
    {
       TrophyPuzzleController.PuzzleSolved += OnPuzzleSolved;
       ButtonPuzzleController.PuzzleSolved += OnPuzzleSolved;
       CandlePuzzleControler.PuzzleSolved += OnPuzzleSolved;
       PanelInput.PuzzleSolved += OnPuzzleSolved;
+      DataLogging.ReachedEndOfPlaytime += EndGame;
    }
 
    private void OnDisable()
@@ -163,5 +177,6 @@ public class GameFlowManager : NetworkBehaviour
       ButtonPuzzleController.PuzzleSolved -= OnPuzzleSolved;
       CandlePuzzleControler.PuzzleSolved -= OnPuzzleSolved;
       PanelInput.PuzzleSolved -= OnPuzzleSolved;
+      DataLogging.ReachedEndOfPlaytime -= EndGame;
    }
 }

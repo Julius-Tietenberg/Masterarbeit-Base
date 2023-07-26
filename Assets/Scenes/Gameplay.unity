@@ -8776,6 +8776,8 @@ MonoBehaviour:
   candlePuzzleSolved: 0
   codePuzzleSolved: 0
   buttonPuzzleSolved: 0
+  amountOfSolvedPuzzles: 0
+  gameFinished: 0
   readyPlayer1: 0
   readyPlayer2: 0
   audioSource: {fileID: 1171994698}
@@ -16482,7 +16484,7 @@ GameObject:
   - component: {fileID: 1210122678}
   m_Layer: 0
   m_Name: Head 2 Placeholder [TESTING ONLY]
-  m_TagString: Untagged
+  m_TagString: Avatar Head
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -23586,9 +23588,11 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   gameFlowManager: {fileID: 724505773}
+  maxGameLengthMins: 12
   posPlayer1: {fileID: 0}
-  posPlayer2: {fileID: 1210122681}
+  posPlayer2: {fileID: 0}
   distanceBetweenPlayers: 0
+  sumOfDistances: 0
   totalTimeSecs: 0
   timeInIntimateSpace: 0
   timeInPersonalSpace: 0

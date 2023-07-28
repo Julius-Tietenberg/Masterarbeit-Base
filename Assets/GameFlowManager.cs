@@ -22,6 +22,7 @@ public class GameFlowManager : NetworkBehaviour
 
    [SerializeField] private Animator doorAnimatorRight;
    [SerializeField] private Animator doorAnimatorLeft;
+   [SerializeField] private Animator lockAnimator;
 
    [SerializeField] private List<Image> puzzleIcons;
 
@@ -165,6 +166,7 @@ public class GameFlowManager : NetworkBehaviour
          //doorAnimatorRight.SetBool("DoorOpen", true);
          doorAnimatorLeft.SetTrigger("isOpenDoor");
          doorAnimatorRight.SetTrigger("isOpenDoor");
+         lockAnimator.SetTrigger("isLockOpen");
          RpcEndGame();
          Debug.Log("Set bools for Door Anmiation");
          Debug.Log("DoorOpen Bool Left afterwards =" + doorAnimatorLeft.GetBool("DoorOpen"));
@@ -180,6 +182,7 @@ public class GameFlowManager : NetworkBehaviour
          //doorAnimatorRight.SetBool("DoorOpen", true);
          doorAnimatorLeft.SetTrigger("isOpenDoor");
          doorAnimatorRight.SetTrigger("isOpenDoor");
+         lockAnimator.SetTrigger("isLockOpen");
          RpcEndGame();
          Debug.Log("Set bools for Door Anmiation");
          Debug.Log("DoorOpen Bool Left afterwards =" + doorAnimatorLeft.GetBool("DoorOpen"));
@@ -195,6 +198,7 @@ public class GameFlowManager : NetworkBehaviour
       
       doorAnimatorLeft.SetTrigger("isOpenDoor");
       doorAnimatorRight.SetTrigger("isOpenDoor");
+      lockAnimator.SetTrigger("isLockOpen");
       Debug.Log("Set bools for Door Anmiation on Client");
    }
 

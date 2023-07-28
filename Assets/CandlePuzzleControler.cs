@@ -13,6 +13,9 @@ public enum CandleColor
 
 public class CandlePuzzleControler : NetworkBehaviour
 {
+
+    [SerializeField] private Animator lockAnimator;
+    
     [SerializeField] 
     private TMP_Text displayTextObject;
     
@@ -72,6 +75,7 @@ public class CandlePuzzleControler : NetworkBehaviour
                     image.gameObject.SetActive(false);
                 }
                 candlePuzzleDisplays[0].SetActive(true);
+                lockAnimator.SetTrigger("isLockOpen");
                 Debug.Log("The candle Puzzle was solved");
             }
             else
@@ -136,6 +140,7 @@ public class CandlePuzzleControler : NetworkBehaviour
                     image.gameObject.SetActive(false);
                 }
                 candlePuzzleDisplays[0].SetActive(true);
+                lockAnimator.SetTrigger("isLockOpen");
                 Debug.Log("The candle Puzzle was solved");
             }
             else

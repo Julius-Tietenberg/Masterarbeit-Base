@@ -8,6 +8,8 @@ public class TrophyPuzzleController : NetworkBehaviour
 {
 
     public static event Action<PuzzleType> PuzzleSolved;
+
+    [SerializeField] private Animator lockAnimator;
     
     [SerializeField] public Vector3 positionOne;
     [SerializeField] public Vector3 positionTwo;
@@ -75,6 +77,7 @@ public class TrophyPuzzleController : NetworkBehaviour
             PuzzleSolved?.Invoke(PuzzleType.Trophy);
             buttonCanvas.SetActive(false);
             // Give some additional feedback
+            lockAnimator.SetTrigger("isLockOpen");
             RpcSolvedFeedback();
         }
     }
@@ -115,6 +118,7 @@ public class TrophyPuzzleController : NetworkBehaviour
     public void RpcSolvedFeedback()
     {
         buttonCanvas.SetActive(false);
+        lockAnimator.SetTrigger("isLockOpen");
     }
 }
 

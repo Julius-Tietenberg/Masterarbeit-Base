@@ -8,6 +8,8 @@ public class PanelInput : NetworkBehaviour
 {
     public static event Action<PuzzleType> PuzzleSolved;
 
+    [SerializeField] private Animator lockAnimator;
+
     [SyncVar][SerializeField]
     private bool codePuzzleSolved;
     
@@ -43,6 +45,7 @@ public class PanelInput : NetworkBehaviour
     public void SwitchLedColor()
     {
         statusLed.color = Color.green;
+        lockAnimator.SetTrigger("isLockOpen");
     }
 
     private void Update()
@@ -53,6 +56,7 @@ public class PanelInput : NetworkBehaviour
             {
                 statusLed.color = Color.green;
                 SwitchLedColor();
+                lockAnimator.SetTrigger("isLockOpen");
                 codePuzzleSolved = true;
                 PuzzleSolved?.Invoke(PuzzleType.Code);
             }

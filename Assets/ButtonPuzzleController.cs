@@ -7,6 +7,14 @@ using System;
 public class ButtonPuzzleController : NetworkBehaviour
 {
 
+    public static event Action<PuzzleType> PuzzleSolved;
+    
+    public AudioSource audioSource;
+    public AudioClip clip;
+    public float volume;
+
+    [SerializeField] private Animator lockAnimator;
+    
     // This list contains all Buttons (in order!).
     public List<GameObject> buttonsInSequence;
 
@@ -48,6 +56,10 @@ public class ButtonPuzzleController : NetworkBehaviour
             currentButtonValue = newValue;
             buttonsInSequence[newValue-1].GetComponent<ButtonController>().FeedbackButtonCorrect();
             buttonPuzzleSolved = true;
+            PuzzleSolved?.Invoke(PuzzleType.Button);
+            StopAllCoroutines();
+            lockAnimator.SetTrigger("isLockOpen");
+            RpcSolvedFeedback();
             Debug.Log("Button Sequence fully solved");
             // Give feedback that the puzzle is solved and deactivate new inputs
         }
@@ -68,12 +80,38 @@ public class ButtonPuzzleController : NetworkBehaviour
         }
     }
 
+    [ClientRpc]
+    public void RpcSolvedFeedback()
+    {
+        lockAnimator.SetTrigger("isLockOpen");
+    }
+
     private IEnumerator WaitAndResetBool(int secondsToWait)
     {
-        yield return new WaitForSeconds(secondsToWait);
+        audioSource.PlayOneShot(audioSource.clip, volume * 1);
+        RpcPlayAudio();
+        yield return new WaitForSeconds(secondsToWait / 5);
+        audioSource.PlayOneShot(audioSource.clip, volume * 2);
+        RpcPlayAudio();
+        yield return new WaitForSeconds(secondsToWait / 5);
+        audioSource.PlayOneShot(audioSource.clip, volume * 3);
+        RpcPlayAudio();
+        yield return new WaitForSeconds(secondsToWait / 5);
+        audioSource.PlayOneShot(audioSource.clip, volume * 4);
+        RpcPlayAudio();
+        yield return new WaitForSeconds(secondsToWait / 5);
+        audioSource.PlayOneShot(audioSource.clip, volume * 5);
+        RpcPlayAudio();
+        yield return new WaitForSeconds(secondsToWait / 5);
         timeExceeded = true;
     }
-    
+
+    [ClientRpc]
+    public void RpcPlayAudio()
+    {
+        audioSource.PlayOneShot(audioSource.clip, volume);
+    }
+
     private IEnumerator WrongFeedbackAndReset(int newValue)
     {
         buttonsInSequence[newValue-1].GetComponent<ButtonController>().FeedbackButtonFalse();
@@ -90,7 +128,6 @@ public class ButtonPuzzleController : NetworkBehaviour
         currentButtonValue = 0;
         newInputBlocked = false;
     }
-    
 
     private void OnEnable()
     {

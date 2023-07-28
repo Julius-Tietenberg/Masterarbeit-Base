@@ -13,6 +13,9 @@ public enum CandleColor
 
 public class CandlePuzzleControler : NetworkBehaviour
 {
+
+    [SerializeField] private Animator lockAnimator;
+    
     [SerializeField] 
     private TMP_Text displayTextObject;
     
@@ -35,8 +38,9 @@ public class CandlePuzzleControler : NetworkBehaviour
     public bool candlePuzzleSolved;
 
     [SerializeField] private List<GameObject> candlePuzzleDisplays;
-
-
+    
+    public static event Action<PuzzleType> PuzzleSolved;
+    
     
     private void Start()
     {
@@ -46,8 +50,8 @@ public class CandlePuzzleControler : NetworkBehaviour
 
     public void UpdateCandleCounter(int change, CandleColor color)
     {
-        //if (isServer && !candlePuzzleSolved)
-        if (isServer)
+        if (isServer && !candlePuzzleSolved)
+        //if (isServer)
         {
             if (color == CandleColor.Green)
             {
@@ -65,11 +69,13 @@ public class CandlePuzzleControler : NetworkBehaviour
             if (purpleCandleCounter == greenCandleCounter)
             {
                 candlePuzzleSolved = true;
+                PuzzleSolved?.Invoke(PuzzleType.Candle);
                 foreach (var image in candlePuzzleDisplays)
                 {
                     image.gameObject.SetActive(false);
                 }
                 candlePuzzleDisplays[0].SetActive(true);
+                lockAnimator.SetTrigger("isLockOpen");
                 Debug.Log("The candle Puzzle was solved");
             }
             else
@@ -134,6 +140,7 @@ public class CandlePuzzleControler : NetworkBehaviour
                     image.gameObject.SetActive(false);
                 }
                 candlePuzzleDisplays[0].SetActive(true);
+                lockAnimator.SetTrigger("isLockOpen");
                 Debug.Log("The candle Puzzle was solved");
             }
             else
@@ -231,6 +238,7 @@ public class CandlePuzzleControler : NetworkBehaviour
             if (purpleCandleCounter == greenCandleCounter)
             {
                 candlePuzzleSolved = true;
+                PuzzleSolved?.Invoke(PuzzleType.Candle);
                 foreach (var image in candlePuzzleDisplays)
                 {
                     image.gameObject.SetActive(false);

@@ -19,7 +19,10 @@ public class GameFlowManager : NetworkBehaviour
    public static event Action<PuzzleType> NewPuzzleSolved;
    public static event Action StartDataLogging;
    public static event Action StopDataLogging;
-   
+
+   [SerializeField] private Animator doorAnimatorRight;
+   [SerializeField] private Animator doorAnimatorLeft;
+
    [SerializeField] private List<Image> puzzleIcons;
 
    [SerializeField] private Color solvedGreen;
@@ -155,11 +158,44 @@ public class GameFlowManager : NetworkBehaviour
       if (amountOfSolvedPuzzles == 4 && gameFinishedByPuzzles)
       {
          // Logic for Win - Solved by Puzzles
+         
+         Debug.Log("DoorOpen Bool Left before =" + doorAnimatorLeft.GetBool("DoorOpen"));
+         Debug.Log("DoorOpen Bool Right before =" + doorAnimatorRight.GetBool("DoorOpen"));
+         //doorAnimatorLeft.SetBool("DoorOpen", true);
+         //doorAnimatorRight.SetBool("DoorOpen", true);
+         doorAnimatorLeft.SetTrigger("isOpenDoor");
+         doorAnimatorRight.SetTrigger("isOpenDoor");
+         RpcEndGame();
+         Debug.Log("Set bools for Door Anmiation");
+         Debug.Log("DoorOpen Bool Left afterwards =" + doorAnimatorLeft.GetBool("DoorOpen"));
+         Debug.Log("DoorOpen Bool Right afterwards =" + doorAnimatorRight.GetBool("DoorOpen"));
       }
       else
       {
          // Logic for End - By time, X Puzzles solved
+         
+         Debug.Log("DoorOpen Bool Left before =" + doorAnimatorLeft.GetBool("DoorOpen"));
+         Debug.Log("DoorOpen Bool Right before =" + doorAnimatorRight.GetBool("DoorOpen"));
+         //doorAnimatorLeft.SetBool("DoorOpen", true);
+         //doorAnimatorRight.SetBool("DoorOpen", true);
+         doorAnimatorLeft.SetTrigger("isOpenDoor");
+         doorAnimatorRight.SetTrigger("isOpenDoor");
+         RpcEndGame();
+         Debug.Log("Set bools for Door Anmiation");
+         Debug.Log("DoorOpen Bool Left afterwards =" + doorAnimatorLeft.GetBool("DoorOpen"));
+         Debug.Log("DoorOpen Bool Right afterwards =" + doorAnimatorRight.GetBool("DoorOpen"));
       }
+   }
+
+   [ClientRpc]
+   public void RpcEndGame()
+   {
+      //doorAnimatorLeft.SetBool("DoorOpen", true);
+      //doorAnimatorRight.SetBool("DoorOpen", true);
+      
+      doorAnimatorLeft.SetTrigger("isOpenDoor");
+      doorAnimatorRight.SetTrigger("isOpenDoor");
+      Debug.Log("Set bools for Door Anmiation on Client");
    }
 
    private void OnEnable()

@@ -25,6 +25,8 @@ public class MultiCandleController : NetworkBehaviour
     
     [SerializeField]
     private  Color candlePurple;
+
+    private bool puzzleActive;
     
     private void Awake()
     {
@@ -67,27 +69,28 @@ public class MultiCandleController : NetworkBehaviour
     [Command (requiresAuthority = false)]
     public void CmdSwitchCandleState()
     {
-        if (!candlesLit)
+        if (puzzleActive)
         {
-            foreach (var flame in candleFlames)
-            {
-                flame.gameObject.SetActive(true);
+         if (!candlesLit)
+         {
+             foreach (var flame in candleFlames)
+             {
+                 flame.gameObject.SetActive(true);
+             } RpcSwitchCandleState(true);
+             candlesLit = true; CandlesSwitched?.Invoke(amountOfCandles, color);
+         }
+         else if (candlesLit) 
+         { 
+             foreach (var flame in candleFlames) 
+             {
+                 flame.gameObject.SetActive(false);
+             }
+             RpcSwitchCandleState(false);
+             candlesLit = false;
+             CandlesSwitched?.Invoke(-amountOfCandles, color);
             }
-            RpcSwitchCandleState(true);
-            candlesLit = true;
-            CandlesSwitched?.Invoke(amountOfCandles, color);
+            Debug.Log("Changed candles state and invoked 'candleSwitched' action");   
         }
-        else if (candlesLit)
-        {
-            foreach (var flame in candleFlames)
-            {
-                flame.gameObject.SetActive(false);
-            }
-            RpcSwitchCandleState(false);
-            candlesLit = false;
-            CandlesSwitched?.Invoke(-amountOfCandles, color);
-        }
-        Debug.Log("Changed candles state and invoked 'candleSwitched' action");
     }
     
     
@@ -113,5 +116,27 @@ public class MultiCandleController : NetworkBehaviour
             }
         }
         Debug.Log("Candles RPC");
+    }
+    
+    public void SetPuzzleActive()
+    {
+        puzzleActive = true;
+    }
+    
+    public void PuzzleInactive()
+    {
+        puzzleActive = false;
+    }
+    
+    private void OnEnable()
+    {
+        GameFlowManager.StartGame += SetPuzzleActive;
+        GameFlowManager.EndCandlePuzzle += PuzzleInactive;
+    }
+
+    private void OnDisable()
+    {
+        GameFlowManager.StartGame -= SetPuzzleActive;
+        GameFlowManager.EndCandlePuzzle -= PuzzleInactive;
     }
 }

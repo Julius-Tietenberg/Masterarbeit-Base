@@ -23,6 +23,7 @@ public class TrophyPuzzleController : NetworkBehaviour
     [SerializeField] private List<GameObject> currentOrder;
 
     [SyncVar] public bool TrophyPuzzleSolved;
+    [SyncVar] public bool puzzleActive;
 
     [SerializeField] private GameObject buttonCanvas;
 
@@ -37,7 +38,7 @@ public class TrophyPuzzleController : NetworkBehaviour
     [Command (requiresAuthority = false)]
     public void CmdSwitchTrophyPositions(int buttonNr)
     {
-        if (TrophyPuzzleSolved != true)
+        if (TrophyPuzzleSolved != true && puzzleActive)
         {
             if (buttonNr == 1)
             {
@@ -113,12 +114,27 @@ public class TrophyPuzzleController : NetworkBehaviour
             counter++;
         }
     }
+    
+    public void SetPuzzleActive()
+    {
+        puzzleActive = true;
+    }
 
     [ClientRpc]
     public void RpcSolvedFeedback()
     {
         buttonCanvas.SetActive(false);
         lockAnimator.SetTrigger("isLockOpen");
+    }
+    
+    private void OnEnable()
+    {
+        GameFlowManager.StartGame += SetPuzzleActive;
+    }
+
+    private void OnDisable()
+    {
+        GameFlowManager.StartGame -= SetPuzzleActive;
     }
 }
 

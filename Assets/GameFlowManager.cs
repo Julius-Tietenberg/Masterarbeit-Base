@@ -18,6 +18,7 @@ public class GameFlowManager : NetworkBehaviour
 {
    
    public static event Action<PuzzleType> NewPuzzleSolved;
+   public static event Action EndCandlePuzzle;
    public static event Action StartDataLogging;
    public static event Action StartGame;
    public static event Action StopDataLogging;
@@ -118,6 +119,7 @@ public class GameFlowManager : NetworkBehaviour
       else if (type == PuzzleType.Candle)
       {
          candlePuzzleSolved = true;
+         EndCandlePuzzle?.Invoke();
          HandlePuzzleFinished(1);
       }
       else if (type == PuzzleType.Trophy)

@@ -21,11 +21,13 @@ public class PanelInput : NetworkBehaviour
 
     [SerializeField] [SyncVar] 
     private string currentLetter;
+
+    public bool puzzleActive; 
     
     [Command(requiresAuthority = false)]
     public void EnterLetter(string letter)
     {
-        if (codePuzzleSolved == false)
+        if (codePuzzleSolved == false && puzzleActive)
         {
             Debug.Log("Switch the last entered Letter");
             currentLetter += letter;
@@ -66,5 +68,20 @@ public class PanelInput : NetworkBehaviour
                 SwitchDisplayedLetter(currentLetter);
             }
         }
+    }
+
+    public void SetPuzzleActive()
+    {
+        puzzleActive = true;
+    }
+    
+    private void OnEnable()
+    {
+        GameFlowManager.StartGame += SetPuzzleActive;
+    }
+
+    private void OnDisable()
+    {
+        GameFlowManager.StartGame -= SetPuzzleActive;
     }
 }

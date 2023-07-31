@@ -36,6 +36,9 @@ public class CandlePuzzleControler : NetworkBehaviour
     
     [SyncVar] 
     public bool candlePuzzleSolved;
+    
+    [SyncVar] 
+    public bool puzzleActive;
 
     [SerializeField] private List<GameObject> candlePuzzleDisplays;
     
@@ -50,7 +53,7 @@ public class CandlePuzzleControler : NetworkBehaviour
 
     public void UpdateCandleCounter(int change, CandleColor color)
     {
-        if (isServer && !candlePuzzleSolved)
+        if (isServer && !candlePuzzleSolved && puzzleActive)
         //if (isServer)
         {
             if (color == CandleColor.Green)
@@ -297,16 +300,23 @@ public class CandlePuzzleControler : NetworkBehaviour
             }
         }
     }
+
+    public void SetPuzzleActive()
+    {
+        puzzleActive = true;
+    }
     
 
     private void OnEnable()
     {
+        GameFlowManager.StartGame += SetPuzzleActive;
         CandleController.CandleSwitched += UpdateCandleCounter;
         MultiCandleController.CandlesSwitched += UpdateCandleCounter;
     }
 
     private void OnDisable()
     {
+        GameFlowManager.StartGame -= SetPuzzleActive;
         CandleController.CandleSwitched -= UpdateCandleCounter;
         MultiCandleController.CandlesSwitched -= UpdateCandleCounter;
     }

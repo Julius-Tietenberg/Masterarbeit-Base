@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using UnityEngine.UI;
+using TMPro;
 
 public enum PuzzleType
 {
@@ -18,6 +19,7 @@ public class GameFlowManager : NetworkBehaviour
    
    public static event Action<PuzzleType> NewPuzzleSolved;
    public static event Action StartDataLogging;
+   public static event Action StartGame;
    public static event Action StopDataLogging;
 
    [SerializeField] private Animator doorAnimatorRight;
@@ -29,6 +31,8 @@ public class GameFlowManager : NetworkBehaviour
    [SerializeField] private Color solvedGreen;
 
    [SerializeField] private GameObject startGameScreen;
+   [SerializeField] private GameObject endGameScreen;
+   [SerializeField] private TMP_Text endGameText;
    [SerializeField] private Image buttonPlayer1;
    [SerializeField] private Image buttonPlayer2;
 
@@ -74,11 +78,12 @@ public class GameFlowManager : NetworkBehaviour
       if (readyPlayer1 && readyPlayer2)
       {
          startGameScreen.SetActive(false);
+         endGameScreen.SetActive(false);
          StartDataLogging?.Invoke();
+         StartGame?.Invoke();
          RpcStartGame();
          // Start the countdown and timer
          // Start data logging
-         
       }
    }
 
@@ -100,6 +105,7 @@ public class GameFlowManager : NetworkBehaviour
    public void RpcStartGame()
    {
       startGameScreen.SetActive(false);
+      endGameScreen.SetActive((false));
    }
 
    public void OnPuzzleSolved(PuzzleType type)
@@ -159,47 +165,35 @@ public class GameFlowManager : NetworkBehaviour
       if (amountOfSolvedPuzzles == 4 && gameFinishedByPuzzles)
       {
          // Logic for Win - Solved by Puzzles
-         
-         Debug.Log("DoorOpen Bool Left before =" + doorAnimatorLeft.GetBool("DoorOpen"));
-         Debug.Log("DoorOpen Bool Right before =" + doorAnimatorRight.GetBool("DoorOpen"));
-         //doorAnimatorLeft.SetBool("DoorOpen", true);
-         //doorAnimatorRight.SetBool("DoorOpen", true);
+         endGameText.text = "Es wurden " + amountOfSolvedPuzzles + "/4 Rätseln erfolgreich gelöst. <br>Bitte wenden Sie sich jetzt an den/die Versuchsleiter*in.";
+         endGameScreen.SetActive(true);
          doorAnimatorLeft.SetTrigger("isOpenDoor");
          doorAnimatorRight.SetTrigger("isOpenDoor");
          lockAnimator.SetTrigger("isLockOpen");
-         RpcEndGame();
-         Debug.Log("Set bools for Door Anmiation");
-         Debug.Log("DoorOpen Bool Left afterwards =" + doorAnimatorLeft.GetBool("DoorOpen"));
-         Debug.Log("DoorOpen Bool Right afterwards =" + doorAnimatorRight.GetBool("DoorOpen"));
+         RpcEndGame(amountOfSolvedPuzzles);
+         
       }
       else
       {
          // Logic for End - By time, X Puzzles solved
-         
-         Debug.Log("DoorOpen Bool Left before =" + doorAnimatorLeft.GetBool("DoorOpen"));
-         Debug.Log("DoorOpen Bool Right before =" + doorAnimatorRight.GetBool("DoorOpen"));
-         //doorAnimatorLeft.SetBool("DoorOpen", true);
-         //doorAnimatorRight.SetBool("DoorOpen", true);
+         endGameText.text = "Es wurden " + amountOfSolvedPuzzles + "/4 Rätseln erfolgreich gelöst. <br>Bitte wenden Sie sich jetzt an den/die Versuchsleiter*in.";
+         endGameScreen.SetActive(true);
          doorAnimatorLeft.SetTrigger("isOpenDoor");
          doorAnimatorRight.SetTrigger("isOpenDoor");
          lockAnimator.SetTrigger("isLockOpen");
-         RpcEndGame();
-         Debug.Log("Set bools for Door Anmiation");
-         Debug.Log("DoorOpen Bool Left afterwards =" + doorAnimatorLeft.GetBool("DoorOpen"));
-         Debug.Log("DoorOpen Bool Right afterwards =" + doorAnimatorRight.GetBool("DoorOpen"));
+         RpcEndGame(amountOfSolvedPuzzles);
+         
       }
    }
 
    [ClientRpc]
-   public void RpcEndGame()
+   public void RpcEndGame(int solvedPuzzles)
    {
-      //doorAnimatorLeft.SetBool("DoorOpen", true);
-      //doorAnimatorRight.SetBool("DoorOpen", true);
-      
+      endGameText.text = "Es wurden " + solvedPuzzles + "/4 Rätseln erfolgreich gelöst. <br>Bitte wenden Sie sich jetzt an den/die Versuchsleiter*in.";
+      endGameScreen.SetActive(true);
       doorAnimatorLeft.SetTrigger("isOpenDoor");
       doorAnimatorRight.SetTrigger("isOpenDoor");
       lockAnimator.SetTrigger("isLockOpen");
-      Debug.Log("Set bools for Door Anmiation on Client");
    }
 
    private void OnEnable()

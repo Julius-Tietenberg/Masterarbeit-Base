@@ -19,13 +19,16 @@ public class ButtonController : NetworkBehaviour
     
     [SyncVar]
     public int buttonSequenceNumber;
+    
+    [SyncVar]
+    public bool puzzleActive;
 
 
     [Command (requiresAuthority = false)]
     public void CmdPressButton()
     {
         Debug.Log("CmdPressButton wird gestartet");
-        if (!buttonPressed)
+        if (!buttonPressed && puzzleActive)
         {
             //play animation (to-do)
             buttonPressed = true;
@@ -69,6 +72,21 @@ public class ButtonController : NetworkBehaviour
     {
         //play animation for client
     }
+
+    public void SetPuzzleActive()
+    {
+        puzzleActive = true;
+    }
     
+    
+    private void OnEnable()
+    {
+        GameFlowManager.StartGame += SetPuzzleActive;
+    }
+
+    private void OnDisable()
+    {
+        GameFlowManager.StartGame -= SetPuzzleActive;
+    }
     
 }

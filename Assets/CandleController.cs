@@ -9,6 +9,11 @@ public class CandleController : NetworkBehaviour
 
     public static event Action<int, CandleColor> CandleSwitched;
     
+    public AudioSource audioSource;
+    public AudioClip candleOff;
+    public AudioClip candleOn;
+    public float volume;
+    
     [SerializeField] 
     private ParticleSystem candleFlame;
 
@@ -76,6 +81,8 @@ public class CandleController : NetworkBehaviour
           {
               //candleFlame.Stop();
               candleFlame.gameObject.SetActive(false);
+              audioSource.PlayOneShot(candleOff, volume);
+              RpcPlayCandleOffAudio();
               RpcSwitchCandleState(false);
               candleLit = false;
               CandleSwitched?.Invoke(-1, color);
@@ -113,6 +120,12 @@ public class CandleController : NetworkBehaviour
     public void PuzzleInactive()
     {
         puzzleActive = false;
+    }
+    
+    [ClientRpc]
+    public void RpcPlayCandleOffAudio()
+    { 
+        audioSource.PlayOneShot(candleOff, volume);
     }
     
     private void OnEnable()

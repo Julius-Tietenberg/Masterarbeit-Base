@@ -50,6 +50,7 @@ public class GameFlowManager : NetworkBehaviour
    
    public AudioSource audioSource;
    public AudioSource soundtrackSource;
+   public AudioSource clockSource;
    public AudioClip clip;
    public AudioClip soundtrack;
    public AudioClip gameOver;
@@ -179,6 +180,8 @@ public class GameFlowManager : NetworkBehaviour
    public void EndGame()
    {
       soundtrackSource.Stop();
+      clockSource.volume = 0f;
+      clockSource.Stop();
       audioSource.PlayOneShot(gameOver, 0.8f);
       if (amountOfSolvedPuzzles == 4 && gameFinishedByPuzzles)
       {
@@ -208,6 +211,8 @@ public class GameFlowManager : NetworkBehaviour
    public void RpcEndGame(int solvedPuzzles)
    {
       soundtrackSource.Stop();
+      clockSource.volume = 0f;
+      clockSource.Stop();
       audioSource.PlayOneShot(gameOver, 0.8f);
       endGameText.text = "Es wurden " + solvedPuzzles + "/4 Rätseln erfolgreich gelöst. <br>Bitte wenden Sie sich jetzt an den/die Versuchsleiter*in.";
       endGameScreen.SetActive(true);

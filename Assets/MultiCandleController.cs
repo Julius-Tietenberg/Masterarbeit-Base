@@ -8,6 +8,11 @@ public class MultiCandleController : NetworkBehaviour
 {
     public static event Action<int, CandleColor> CandlesSwitched;
     
+    public AudioSource audioSource;
+    public AudioClip candleOff;
+    public AudioClip candleOn;
+    public float volume;
+    
     [SerializeField] 
     private List<ParticleSystem> candleFlames;
 
@@ -73,19 +78,25 @@ public class MultiCandleController : NetworkBehaviour
         {
          if (!candlesLit)
          {
+             audioSource.PlayOneShot(candleOn, volume);
+             RpcPlayCandleOnAudio();
              foreach (var flame in candleFlames)
              {
                  flame.gameObject.SetActive(true);
-             } RpcSwitchCandleState(true);
+             } 
+             RpcSwitchCandleState(true);
              candlesLit = true; CandlesSwitched?.Invoke(amountOfCandles, color);
          }
          else if (candlesLit) 
          { 
+             audioSource.PlayOneShot(candleOff, volume);
+             RpcPlayCandleOffAudio();
              foreach (var flame in candleFlames) 
              {
                  flame.gameObject.SetActive(false);
              }
              RpcSwitchCandleState(false);
+             
              candlesLit = false;
              CandlesSwitched?.Invoke(-amountOfCandles, color);
             }
@@ -126,6 +137,18 @@ public class MultiCandleController : NetworkBehaviour
     public void PuzzleInactive()
     {
         puzzleActive = false;
+    }
+    
+    [ClientRpc]
+    public void RpcPlayCandleOffAudio()
+    { 
+        audioSource.PlayOneShot(candleOff, volume);
+    }
+    
+    [ClientRpc]
+    public void RpcPlayCandleOnAudio()
+    { 
+        audioSource.PlayOneShot(candleOn, volume);
     }
     
     private void OnEnable()

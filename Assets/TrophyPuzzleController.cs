@@ -9,6 +9,10 @@ public class TrophyPuzzleController : NetworkBehaviour
 
     public static event Action<PuzzleType> PuzzleSolved;
 
+    public AudioSource audioSource;
+    public AudioClip swoosh;
+    public float volume;
+
     [SerializeField] private Animator lockAnimator;
     
     [SerializeField] public Vector3 positionOne;
@@ -40,6 +44,7 @@ public class TrophyPuzzleController : NetworkBehaviour
     {
         if (TrophyPuzzleSolved != true && puzzleActive)
         {
+            audioSource.PlayOneShot(swoosh, volume);
             if (buttonNr == 1)
             {
                 var leftTrophy = currentOrder[0]; 
@@ -67,7 +72,6 @@ public class TrophyPuzzleController : NetworkBehaviour
                 trophy.transform.position = trophyPositions[counter];
                 counter++;
             }
-            
             RpcSwitchTrophyPositions(buttonNr);
             
         }
@@ -86,6 +90,7 @@ public class TrophyPuzzleController : NetworkBehaviour
     [ClientRpc]
     public void RpcSwitchTrophyPositions(int buttonNr)
     {
+        audioSource.PlayOneShot(swoosh, volume);
         if (buttonNr == 1)
         {
             var leftTrophy = currentOrder[0]; 

@@ -73,6 +73,8 @@ public class CandleController : NetworkBehaviour
           {
               //candleFlame.Play();
               candleFlame.gameObject.SetActive(true);
+              audioSource.PlayOneShot(candleOn, volume);
+              RpcPlayCandleOnAudio();
               RpcSwitchCandleState(true);
               candleLit = true;
               CandleSwitched?.Invoke(1, color);
@@ -126,6 +128,12 @@ public class CandleController : NetworkBehaviour
     public void RpcPlayCandleOffAudio()
     { 
         audioSource.PlayOneShot(candleOff, volume);
+    }
+    
+    [ClientRpc]
+    public void RpcPlayCandleOnAudio()
+    { 
+        audioSource.PlayOneShot(candleOn, volume);
     }
     
     private void OnEnable()

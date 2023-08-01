@@ -49,10 +49,20 @@ public class GameFlowManager : NetworkBehaviour
    [SyncVar] public bool readyPlayer2;
    
    public AudioSource audioSource;
+   public AudioSource soundtrackSource;
    public AudioClip clip;
+   public AudioClip soundtrack;
+   public AudioClip gameOver;
    public float volume=0.6f;
-   
-   
+
+
+   public void Awake()
+   {
+      soundtrackSource.Stop();
+      endGameScreen.SetActive(false);
+   }
+
+
    [Command (requiresAuthority = false)]
    public void CmdSetPlayerStatus(int player)
    {
@@ -82,6 +92,8 @@ public class GameFlowManager : NetworkBehaviour
          endGameScreen.SetActive(false);
          StartDataLogging?.Invoke();
          StartGame?.Invoke();
+         audioSource.PlayOneShot(gameOver, 0.8f);
+         soundtrackSource.Play();
          RpcStartGame();
          // Start the countdown and timer
          // Start data logging
@@ -105,8 +117,10 @@ public class GameFlowManager : NetworkBehaviour
    [ClientRpc]
    public void RpcStartGame()
    {
+      audioSource.PlayOneShot(gameOver, 0.8f);
       startGameScreen.SetActive(false);
-      endGameScreen.SetActive((false));
+      endGameScreen.SetActive(false);
+      soundtrackSource.Play();
    }
 
    public void OnPuzzleSolved(PuzzleType type)
@@ -164,6 +178,8 @@ public class GameFlowManager : NetworkBehaviour
 
    public void EndGame()
    {
+      soundtrackSource.Stop();
+      audioSource.PlayOneShot(gameOver, 0.8f);
       if (amountOfSolvedPuzzles == 4 && gameFinishedByPuzzles)
       {
          // Logic for Win - Solved by Puzzles
@@ -191,6 +207,8 @@ public class GameFlowManager : NetworkBehaviour
    [ClientRpc]
    public void RpcEndGame(int solvedPuzzles)
    {
+      soundtrackSource.Stop();
+      audioSource.PlayOneShot(gameOver, 0.8f);
       endGameText.text = "Es wurden " + solvedPuzzles + "/4 Rätseln erfolgreich gelöst. <br>Bitte wenden Sie sich jetzt an den/die Versuchsleiter*in.";
       endGameScreen.SetActive(true);
       doorAnimatorLeft.SetTrigger("isOpenDoor");

@@ -9,6 +9,11 @@ public class CandleController : NetworkBehaviour
 
     public static event Action<int, CandleColor> CandleSwitched;
     
+    public AudioSource audioSource;
+    public AudioClip candleOff;
+    public AudioClip candleOn;
+    public float volume;
+    
     [SerializeField] 
     private ParticleSystem candleFlame;
 
@@ -23,6 +28,8 @@ public class CandleController : NetworkBehaviour
     
     [SerializeField]
     private  Color candlePurple;
+
+    private bool puzzleActive;
 
     /// <summary>
     /// Awake sets the candle flame color based on the enum value.
@@ -60,23 +67,30 @@ public class CandleController : NetworkBehaviour
     [Command (requiresAuthority = false)]
     public void CmdSwitchCandleState()
     {
-        if (!candleLit)
+        if (puzzleActive)
         {
-            //candleFlame.Play();
-            candleFlame.gameObject.SetActive(true);
-            RpcSwitchCandleState(true);
-            candleLit = true;
-            CandleSwitched?.Invoke(1, color);
+          if (!candleLit)
+          {
+              //candleFlame.Play();
+              candleFlame.gameObject.SetActive(true);
+              audioSource.PlayOneShot(candleOn, volume);
+              RpcPlayCandleOnAudio();
+              RpcSwitchCandleState(true);
+              candleLit = true;
+              CandleSwitched?.Invoke(1, color);
+          }
+          else if (candleLit)
+          {
+              //candleFlame.Stop();
+              candleFlame.gameObject.SetActive(false);
+              audioSource.PlayOneShot(candleOff, volume);
+              RpcPlayCandleOffAudio();
+              RpcSwitchCandleState(false);
+              candleLit = false;
+              CandleSwitched?.Invoke(-1, color);
+            }
+          Debug.Log("Changed candle state and invoked 'candleSwitched' action");  
         }
-        else if (candleLit)
-        {
-            //candleFlame.Stop();
-            candleFlame.gameObject.SetActive(false);
-            RpcSwitchCandleState(false);
-            candleLit = false;
-            CandleSwitched?.Invoke(-1, color);
-        }
-        Debug.Log("Changed candle state and invoked 'candleSwitched' action");
     }
     
     
@@ -98,5 +112,39 @@ public class CandleController : NetworkBehaviour
             candleFlame.gameObject.SetActive(false);
         }
         Debug.Log("Candle RPC");
+    }
+
+    public void SetPuzzleActive()
+    {
+        puzzleActive = true;
+    }
+    
+    public void PuzzleInactive()
+    {
+        puzzleActive = false;
+    }
+    
+    [ClientRpc]
+    public void RpcPlayCandleOffAudio()
+    { 
+        audioSource.PlayOneShot(candleOff, volume);
+    }
+    
+    [ClientRpc]
+    public void RpcPlayCandleOnAudio()
+    { 
+        audioSource.PlayOneShot(candleOn, volume);
+    }
+    
+    private void OnEnable()
+    {
+        GameFlowManager.StartGame += SetPuzzleActive;
+        GameFlowManager.EndCandlePuzzle += PuzzleInactive;
+    }
+
+    private void OnDisable()
+    {
+        GameFlowManager.StartGame -= SetPuzzleActive;
+        GameFlowManager.EndCandlePuzzle -= PuzzleInactive;
     }
 }

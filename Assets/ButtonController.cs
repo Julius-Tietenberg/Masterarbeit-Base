@@ -9,6 +9,11 @@ public class ButtonController : NetworkBehaviour
    
     // This is invoked to inform all listeners, when a specific button is pressed.
     public static event Action<int> ButtonWasPressed;
+    
+    public AudioSource audioSource;
+    public AudioClip error;
+    public AudioClip buttonPress;
+    public float volume;
 
     public GameObject buttonKnob;
 
@@ -19,16 +24,21 @@ public class ButtonController : NetworkBehaviour
     
     [SyncVar]
     public int buttonSequenceNumber;
+    
+    [SyncVar]
+    public bool puzzleActive;
 
 
     [Command (requiresAuthority = false)]
     public void CmdPressButton()
     {
         Debug.Log("CmdPressButton wird gestartet");
-        if (!buttonPressed)
+        if (!buttonPressed && puzzleActive)
         {
             //play animation (to-do)
             buttonPressed = true;
+            audioSource.PlayOneShot(buttonPress, volume);
+            RpcPlayButtonAnimationAndAudio();
             ButtonWasPressed?.Invoke(buttonSequenceNumber);
             Debug.Log("Action invoked");
         }
@@ -48,6 +58,8 @@ public class ButtonController : NetworkBehaviour
     public void FeedbackButtonFalse()
     {
         buttonKnob.GetComponent<MeshRenderer>().material = buttonMaterials[2];
+        audioSource.PlayOneShot(error, volume);
+        RpcPlayErrorAudio();
         RpcSetButtonClient(2);
     }
     
@@ -65,10 +77,33 @@ public class ButtonController : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void RpcPlayButtonAnimation()
+    public void RpcPlayButtonAnimationAndAudio()
     {
         //play animation for client
+        audioSource.PlayOneShot(buttonPress, volume);
     }
     
+    [ClientRpc]
+    public void RpcPlayErrorAudio()
+    { 
+        audioSource.PlayOneShot(error, volume);
+    }
+    
+
+    public void SetPuzzleActive()
+    {
+        puzzleActive = true;
+    }
+    
+    
+    private void OnEnable()
+    {
+        GameFlowManager.StartGame += SetPuzzleActive;
+    }
+
+    private void OnDisable()
+    {
+        GameFlowManager.StartGame -= SetPuzzleActive;
+    }
     
 }

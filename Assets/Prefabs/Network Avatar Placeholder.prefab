@@ -7029,6 +7029,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1779475097150621173}
     m_Modifications:
+    - target: {fileID: 1510237696143181408, guid: 0881037462cd42f4fa1ab88b7258fbd3, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: -3594264934205317277, guid: bf6207727ebdf6d4b9ffe69f4d3f1b1e, type: 3}
     - target: {fileID: 2417586973959131556, guid: 0881037462cd42f4fa1ab88b7258fbd3, type: 3}
       propertyPath: solver.leftArm.target
       value: 
@@ -7109,6 +7113,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: b12c59e9cc238ae41ae2d31f1fc2f4b8, type: 2}
+    - target: {fileID: 8419561459191555143, guid: 0881037462cd42f4fa1ab88b7258fbd3, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100004, guid: 80e6035dc653427458a8ff49ad454eee, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0881037462cd42f4fa1ab88b7258fbd3, type: 3}
 --- !u!137 &3526378078555237999 stripped

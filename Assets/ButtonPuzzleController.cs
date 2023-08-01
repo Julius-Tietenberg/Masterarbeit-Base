@@ -11,6 +11,7 @@ public class ButtonPuzzleController : NetworkBehaviour
     
     public AudioSource audioSource;
     public AudioClip clip;
+    public AudioClip lastBeep;
     public float volume;
 
     [SerializeField] private Animator lockAnimator;
@@ -76,6 +77,7 @@ public class ButtonPuzzleController : NetworkBehaviour
         else
         {
             newInputBlocked = true;
+            StopAllCoroutines();
             StartCoroutine(WrongFeedbackAndReset(newValue));
         }
     }
@@ -88,28 +90,34 @@ public class ButtonPuzzleController : NetworkBehaviour
 
     private IEnumerator WaitAndResetBool(int secondsToWait)
     {
-        audioSource.PlayOneShot(audioSource.clip, volume * 1);
-        RpcPlayAudio();
-        yield return new WaitForSeconds(secondsToWait / 5);
-        audioSource.PlayOneShot(audioSource.clip, volume * 2);
-        RpcPlayAudio();
-        yield return new WaitForSeconds(secondsToWait / 5);
-        audioSource.PlayOneShot(audioSource.clip, volume * 3);
-        RpcPlayAudio();
-        yield return new WaitForSeconds(secondsToWait / 5);
-        audioSource.PlayOneShot(audioSource.clip, volume * 4);
-        RpcPlayAudio();
-        yield return new WaitForSeconds(secondsToWait / 5);
-        audioSource.PlayOneShot(audioSource.clip, volume * 5);
-        RpcPlayAudio();
-        yield return new WaitForSeconds(secondsToWait / 5);
+        audioSource.PlayOneShot(audioSource.clip, volume);
+        RpcPlayAudio(false);
+        yield return new WaitForSeconds(secondsToWait / 4);
+        audioSource.PlayOneShot(audioSource.clip, volume);
+        RpcPlayAudio(false);
+        yield return new WaitForSeconds(secondsToWait / 4);
+        audioSource.PlayOneShot(audioSource.clip, volume);
+        RpcPlayAudio(false);
+        yield return new WaitForSeconds(secondsToWait / 4);
+        audioSource.PlayOneShot(audioSource.clip, volume);
+        RpcPlayAudio(false);
+        yield return new WaitForSeconds(secondsToWait / 4);
+        audioSource.PlayOneShot(lastBeep, volume);
+        RpcPlayAudio(true);
         timeExceeded = true;
     }
 
     [ClientRpc]
-    public void RpcPlayAudio()
+    public void RpcPlayAudio(bool last)
     {
-        audioSource.PlayOneShot(audioSource.clip, volume);
+        if (!last)
+        {
+            audioSource.PlayOneShot(audioSource.clip, volume);
+        }
+        else
+        {
+            audioSource.PlayOneShot(lastBeep, volume);
+        }
     }
 
     private IEnumerator WrongFeedbackAndReset(int newValue)

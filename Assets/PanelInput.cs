@@ -8,6 +8,11 @@ public class PanelInput : NetworkBehaviour
 {
     public static event Action<PuzzleType> PuzzleSolved;
 
+    public AudioSource audioSource;
+    public AudioClip error;
+    public AudioClip buttonPress;
+    public float volume;
+
     [SerializeField] private Animator lockAnimator;
 
     [SyncVar][SerializeField]
@@ -21,15 +26,19 @@ public class PanelInput : NetworkBehaviour
 
     [SerializeField] [SyncVar] 
     private string currentLetter;
+
+    public bool puzzleActive; 
     
     [Command(requiresAuthority = false)]
     public void EnterLetter(string letter)
     {
-        if (codePuzzleSolved == false)
+        if (codePuzzleSolved == false && puzzleActive)
         {
             Debug.Log("Switch the last entered Letter");
             currentLetter += letter;
             displayTextObject.text = currentLetter;
+            audioSource.PlayOneShot(buttonPress, volume);
+            RpcPlayClickAudio();
             SwitchDisplayedLetter(currentLetter);
         }
     }
@@ -63,8 +72,37 @@ public class PanelInput : NetworkBehaviour
             else if (currentLetter.Length == 6)
             {
                 currentLetter = "";
+                audioSource.PlayOneShot(error, volume);
+                RpcPlayErrorAudio();
                 SwitchDisplayedLetter(currentLetter);
             }
         }
+    }
+
+    [ClientRpc]
+    public void RpcPlayErrorAudio()
+    { 
+        audioSource.PlayOneShot(error, volume);
+    }
+    
+    [ClientRpc]
+    public void RpcPlayClickAudio()
+    { 
+        audioSource.PlayOneShot(buttonPress, volume);
+    }
+
+    public void SetPuzzleActive()
+    {
+        puzzleActive = true;
+    }
+    
+    private void OnEnable()
+    {
+        GameFlowManager.StartGame += SetPuzzleActive;
+    }
+
+    private void OnDisable()
+    {
+        GameFlowManager.StartGame -= SetPuzzleActive;
     }
 }

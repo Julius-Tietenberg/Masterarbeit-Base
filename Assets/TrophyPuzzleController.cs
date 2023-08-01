@@ -9,6 +9,10 @@ public class TrophyPuzzleController : NetworkBehaviour
 
     public static event Action<PuzzleType> PuzzleSolved;
 
+    public AudioSource audioSource;
+    public AudioClip swoosh;
+    public float volume;
+
     [SerializeField] private Animator lockAnimator;
     
     [SerializeField] public Vector3 positionOne;
@@ -23,6 +27,7 @@ public class TrophyPuzzleController : NetworkBehaviour
     [SerializeField] private List<GameObject> currentOrder;
 
     [SyncVar] public bool TrophyPuzzleSolved;
+    [SyncVar] public bool puzzleActive;
 
     [SerializeField] private GameObject buttonCanvas;
 
@@ -37,8 +42,9 @@ public class TrophyPuzzleController : NetworkBehaviour
     [Command (requiresAuthority = false)]
     public void CmdSwitchTrophyPositions(int buttonNr)
     {
-        if (TrophyPuzzleSolved != true)
+        if (TrophyPuzzleSolved != true && puzzleActive)
         {
+            audioSource.PlayOneShot(swoosh, volume);
             if (buttonNr == 1)
             {
                 var leftTrophy = currentOrder[0]; 
@@ -66,7 +72,6 @@ public class TrophyPuzzleController : NetworkBehaviour
                 trophy.transform.position = trophyPositions[counter];
                 counter++;
             }
-            
             RpcSwitchTrophyPositions(buttonNr);
             
         }
@@ -85,6 +90,7 @@ public class TrophyPuzzleController : NetworkBehaviour
     [ClientRpc]
     public void RpcSwitchTrophyPositions(int buttonNr)
     {
+        audioSource.PlayOneShot(swoosh, volume);
         if (buttonNr == 1)
         {
             var leftTrophy = currentOrder[0]; 
@@ -113,12 +119,27 @@ public class TrophyPuzzleController : NetworkBehaviour
             counter++;
         }
     }
+    
+    public void SetPuzzleActive()
+    {
+        puzzleActive = true;
+    }
 
     [ClientRpc]
     public void RpcSolvedFeedback()
     {
         buttonCanvas.SetActive(false);
         lockAnimator.SetTrigger("isLockOpen");
+    }
+    
+    private void OnEnable()
+    {
+        GameFlowManager.StartGame += SetPuzzleActive;
+    }
+
+    private void OnDisable()
+    {
+        GameFlowManager.StartGame -= SetPuzzleActive;
     }
 }
 

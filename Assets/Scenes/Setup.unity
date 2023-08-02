@@ -5260,7 +5260,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Sobald Sie bereit sind, k\xF6nnen Sie auf den Button klicken, um die Steuereung
+  m_text: "Sobald Sie bereit sind, k\xF6nnen Sie auf den Button klicken, um die Steuerung
     zu lernen."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

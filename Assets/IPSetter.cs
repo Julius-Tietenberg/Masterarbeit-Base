@@ -12,7 +12,11 @@ public class IPSetter : MonoBehaviour
     
     private bool blocked = false;
 
-    private string entry = "192.168.178.52:8569";
+    // IP @HOME
+    // private string entry = "192.168.178.52:8569";
+    
+    // IP @ UNI (LE402)
+    private string entry = "192.168.11.232:8569";
 
     private const string playerPrefsIpIdentifier = "IP";
     private const string playerPrefsPortIdentifier = "Port";

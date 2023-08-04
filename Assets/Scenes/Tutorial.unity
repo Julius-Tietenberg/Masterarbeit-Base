@@ -4020,7 +4020,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Um ein Symbol einzugeben, kann direkt mit den Tasten interagiert werden.
     Hierzu muss die Trigger-Taste (Zeigefinger) eines Controllers gedr\xFCckt werden,
-    sobald der Pointer (Laserstrahl) die Taste ber\xFChrt, damit der abgebildete
+    sobald der Pointer (\"Laserstrahl\") die Taste ber\xFChrt, damit der abgebildete
     Wert eingegeben wird."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -6360,8 +6360,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "Um im folgenden Spiel zu interagieren, k\xF6nnen Sie jederzeit die Trigger-Taste
-    (Zeigefinger) des Controllers verwenden. Bitte drehen Sie sich jetzt um und probieren
-    alle M\xF6glichkeiten aus."
+    (Zeigefinger) des Controllers verwenden. Bitte drehen Sie sich jetzt und probieren
+    alle drei M\xF6glichkeiten aus."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -8854,9 +8854,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Um die Positionen von Objekten zu tauschen, k\xF6nnen Sie das Wechsel-Symbol
+  m_text: "Um die Positionen von Objekten zu tauschen, k\xF6nnen Sie das \"Wechsel-Symbol\"
     in der Mitte ausw\xE4hlen. Dazu kann die Trigger-Taste (Zeigefinger) eines Controllers
-    genutzt werden."
+    genutzt werden, wenn der Pointer (\"Laserstrahl\") das Symbol trifft."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -8883,8 +8883,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 4
-  m_fontSizeBase: 4
+  m_fontSize: 3.76
+  m_fontSizeBase: 3.76
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -9200,7 +9200,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -3.6}
-  m_SizeDelta: {x: 73.4, y: 18.42}
+  m_SizeDelta: {x: 75.71, y: 18.42}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1873087693
 MonoBehaviour:
@@ -9224,7 +9224,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Um eine Flamme zu erzeugen oder zu l\xF6schen, kann einfach mit Objekten,
     wie z.B. dem Kerzenleuchter interagiert werden. Hierzu muss die Trigger-Taste
-    (Zeigefinger) eines Controllers gedr\xFCckt werden, sobald der Pointer (Laserstrahl)
+    (Zeigefinger) eines Controllers gedr\xFCckt werden, sobald der Pointer (\"Laserstrahl\")
     das Objekt ber\xFChrt."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

@@ -114,7 +114,7 @@ public class DataLogging : NetworkBehaviour
             }
         }
 
-        if (totalTimeSecs >= (60f * maxGameLengthMins))
+        if (totalTimeSecs >= (60f * maxGameLengthMins) && !dataSaved) // Bugfix for Testing with Marius. Should prevent the sound loop and more problems.
         {
             SaveData();
             ReachedEndOfPlaytime?.Invoke();

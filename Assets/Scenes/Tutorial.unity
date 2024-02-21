@@ -1019,7 +1019,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 192.168.11.232:8569
+  m_text: 192.168.11.119:8569
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -8163,6 +8163,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114282569294116652, guid: 1264c01c7f8182e47ac9f784af03d895, type: 3}
+      propertyPath: _isMuted
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114282569294116652, guid: 1264c01c7f8182e47ac9f784af03d895, type: 3}
+      propertyPath: _isDeafened
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1264c01c7f8182e47ac9f784af03d895, type: 3}
 --- !u!4 &1689684520 stripped
@@ -8371,7 +8379,7 @@ MonoBehaviour:
   offlineScene: Assets/Scenes/Tutorial.unity
   onlineScene: Assets/Scenes/Gameplay.unity
   transport: {fileID: 1745809319}
-  networkAddress: 192.168.11.232:8569
+  networkAddress: 192.168.11.119:8569
   maxConnections: 3
   authenticator: {fileID: 0}
   playerPrefab: {fileID: 1779475097150621172, guid: 7835d0f2ee253594db987a0fcb971117, type: 3}

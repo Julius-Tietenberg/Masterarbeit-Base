@@ -16,7 +16,7 @@ public class IPSetter : MonoBehaviour
     // private string entry = "192.168.178.52:8569";
     
     // IP @ UNI (LE402)
-    private string entry = "192.168.11.232:8569";
+    private string entry = "192.168.11.119:8569";
 
     private const string playerPrefsIpIdentifier = "IP";
     private const string playerPrefsPortIdentifier = "Port";
